@@ -1,0 +1,325 @@
+﻿<script src="../../assets/js/owl.carousel.min.js"></script>
+<script src="../../assets/js/adsdetails.js"></script>
+
+<script>
+    function Search() {
+        window.location = 'Category/Search?keywords=' + $("#ads").val();
+    }
+
+    $(document).ready(function () {
+
+    }
+    );
+</script>
+
+@model DAL.AdvModel
+
+<div class="intro">
+    <div class="dtable hw100">
+        <div class="dtable-cell hw100">
+            <div class="container text-center">
+                <h1 class="intro-title animated fadeInDown">Объявления для вас</h1>
+                <p class="sub animateme fittext3 animated fadeIn">Найдите то, что вам интересно за секунды</p>
+                <div class="row search-row animated fadeInUp">
+                    <div class="col-lg-4 col-sm-4 search-col relative locationicon">
+                        <i class="icon-location-2 icon-append"></i>
+                        <input type="text" name="country" id="autocomplete-ajax" class="form-control locinput input-rel searchtag-input has-icon" placeholder="Город..." value="">
+                    </div>
+                    <div class="col-lg-4 col-sm-4 search-col relative">
+                        <i class="icon-docs icon-append"></i>
+                        <input type="text" name="ads" id="ads" class="form-control has-icon" placeholder="Название или описание товара/услуги ..." value="">
+                    </div>
+                    <div class="col-lg-4 col-sm-4 search-col">
+                        <button onclick="Search();" class="btn btn-primary btn-search btn-block"><i class="icon-search"></i><strong>Найти</strong></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.intro -->
+
+<div class="main-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 page-content col-thin-right">
+                <div class="inner-box category-content">
+                    <div class="inner-box relative">
+                        <h2 class="title-2">
+                            ПРОДВИГАЕМЫЕ ОБЪЯВЛЕНИЯ
+                            <a id="nextItem" class="link pull-right carousel-nav"> <i class="icon-right-open-big"></i></a>
+                            <a id="prevItem" class="link pull-right carousel-nav"> <i class="icon-left-open-big"></i> </a>
+                        </h2>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="no-margin item-carousel owl-carousel owl-theme">
+                                    @foreach (var item in Model._featuredList)
+                                    {
+                                        <div class="item">
+                                            <a href="@item.adsurl">
+                                                <span class="item-carousel-thumb">
+                                                    <img class="img-responsive" src="@item.firstphoto" alt="img">
+                                                </span>
+                                                <span class="item-name">@item.Name</span>
+                                                <span class="price">@item.PriceLabel</span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="title-2 icon-theatre">СООБЩЕСТВО. У нас не так много участников @Html.ActionLink("Зарегистрируйтесь", "Register", "Account"), @Html.ActionLink("Создайте свой интересный блог", "Create", "Blog"), привлеките 100 пользователей, получите вознаграждение в размере 1 000 РУБ.</h2>
+                    <div class="row">
+                        @{
+                            var CatRowCount =4;
+                        }
+
+                        @for (var i = 0; i < Model._categories.Count() / CatRowCount + 1; i++)
+                        {
+                            <div class="col-md-4 col-sm-4 @if (i == CatRowCount - 1)
+                                                          {
+                                                              @Model.LastColumn
+                                                          }">
+
+
+                                @for (var j = i * CatRowCount; j < i * CatRowCount + CatRowCount; j++)
+                                {
+                                    if (Model._categories.Count() > j)
+                                    {
+                                        var item = Model._categories.ElementAt(j);
+                                        <div class="cat-list">
+                                            <h3 class="cat-title">
+                                                <a href="/Category/Search?Cat=@item.ID"><i class="fa @item.IconName ln-shadow"></i>@item.Name@*<span class="count">277,959</span>*@ </a>
+                                                <span data-target=".cat-id-1" data-toggle="collapse" class="btn-cat-collapsed collapsed"><span class=" icon-down-open-big"></span></span>
+                                            </h3>
+                                            <ul class="cat-collapse collapse in cat-id-1">
+                                                @foreach (var subitem in Model._subCategories.Where(x => x.Category_Id == item.ID))
+                                                {
+                                                    <li> <a href="/Category/Search?Id=@subitem.ID">@subitem.Name</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        }
+                    </div>
+
+                    @*<div class="inner-box relative">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div>
+                                        <h3 class="title-2"> <i class="icon-location-2"></i> Popular locations  </h3>
+                                        <div class="row">
+                                            <ul class="cat-list col-xs-6">
+                                                <li> <a href="category.html">Atlanta</a></li>
+                                                <li> <a href="category.html">Wichita </a></li>
+                                                <li> <a href="category.html"> Anchorage </a></li>
+                                                <li> <a href="category.html"> Dallas  </a></li>
+                                                <li> <a href="category.html"> New York  </a></li>
+                                                <li> <a href="category.html">Santa Ana/Anaheim </a></li>
+                                                <li> <a href="category.html"> Miami  </a></li>
+                                                <li> <a href="category.html">Los Angeles</a></li>
+                                            </ul>
+
+                                            <ul class="cat-list cat-list-border col-xs-6">
+                                                <li> <a href="category.html">Virginia Beach  </a></li>
+                                                <li> <a href="category.html"> San Diego   </a></li>
+                                                <li> <a href="category.html">Boston </a></li>
+                                                <li> <a href="category.html">Houston</a></li>
+                                                <li> <a href="category.html">Salt Lake City </a></li>
+                                                <li> <a href="category.html">San Francisco  </a></li>
+                                                <li> <a href="category.html">Tampa   </a></li>
+                                                <li> <a href="category.html"> Washington DC   </a></li>
+
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-7 ">
+                                    <h3 class="title-2"> <i class="icon-search-1"></i> Popular Makes </h3>
+                                    <div class="row">
+                                        <ul class="cat-list col-md-4 col-xs-4 col-xxs-6">
+                                            <li> <a href="category.html">free </a></li>
+                                            <li> <a href="category.html">furniture </a></li>
+                                            <li> <a href="category.html">general </a></li>
+                                            <li> <a href="category.html">household </a></li>
+                                            <li> <a href="category.html">jewelry </a></li>
+                                            <li> <a href="category.html">materials </a></li>
+                                            <li> <a href="category.html">sporting </a></li>
+                                            <li> <a href="category.html">tickets </a></li>
+                                        </ul>
+                                        <ul class="cat-list col-md-4 col-xs-4 col-xxs-6">
+                                            <li> <a href="category.html">tools </a></li>
+                                            <li> <a href="category.html">wanted </a></li>
+                                            <li> <a href="category.html">cell phones </a></li>
+                                            <li> <a href="category.html">clothes+acc </a></li>
+                                            <li> <a href="category.html">collectibles </a></li>
+                                            <li> <a href="category.html">electronics </a></li>
+                                            <li> <a href="category.html">farm+garden </a></li>
+                                            <li> <a href="category.html">garage sale </a></li>
+                                        </ul>
+                                        <ul class="cat-list col-md-4 col-xs-4 col-xxs-6">
+                                            <li> <a href="category.html">heavy equip </a></li>
+                                            <li> <a href="category.html">motorcycles </a></li>
+                                            <li> <a href="category.html">music instr </a></li>
+                                            <li> <a href="category.html">photo+video </a></li>
+                                            <li> <a href="category.html">appliances </a></li>
+                                            <li> <a href="category.html">Land </a></li>
+                                            <li> <a href="category.html">arts+crafts </a></li>
+                                            <li> <a href="category.html">auto parts </a></li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+
+            </div>
+            <div class="col-sm-3 page-sidebar col-thin-left">
+                <aside>
+                    <div class="inner-box">
+                        <h2 class="title-2">Отзывы и блоги</h2>
+                        <div class="inner-box-content">
+                            <ul class="cat-list arrow">
+                                <li>Отзыв о <a href="/Review/All">@Model.TopReview.AboutName</a></li>
+                                <li>Блог: <a href="/Blog/BlogDetails/@Model.TopBlog.Id">@Model.TopBlog.Name</a></li>
+                            </ul>
+                            @Html.ActionLink("Все блоги", "Index", "Blog") |
+                            @Html.ActionLink("Все отзывы", "All", "Review")
+                        </div>
+                    </div>
+                    <div class="inner-box">
+                        <h2 class="title-2">Популярные</h2>
+                        <div class="inner-box-content">
+                            <ul class="cat-list arrow">
+                                @foreach (var subitem in Model.Popular.OrderByDescending(x => x.Count).ToList())
+                                {
+                                    <li> <a href="/Category/Search?Id=@subitem.ID">@subitem.Name (@subitem.Count) </a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div class="inner-box no-padding">
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                            <!-- adv large long box -->
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-9707096941681181"
+                                 data-ad-slot="8754484356"
+                                 data-ad-format="auto"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                    </div>
+
+                    <div class="inner-box no-padding">
+                        <div class="inner-box-content">
+                            <a href="#">
+                                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                                <!-- adv box -->
+                                <ins class="adsbygoogle"
+                                     style="display:inline-block;width:300px;height:250px"
+                                     data-ad-client="ca-pub-9707096941681181"
+                                     data-ad-slot="4324284756"></ins>
+                                <script>
+                                    (adsbygoogle = window.adsbygoogle || []).push({});
+                                </script>
+                            </a>
+
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+    <!-- /.main-container -->
+
+    <div class="page-info" style="background: url(images/bg.jpg); background-size:cover">
+        <div class="container text-center section-promo">
+            <div class="row">
+                <div class="col-sm-3 col-xs-6 col-xxs-12">
+                    <div class="iconbox-wrap">
+                        <div class="iconbox">
+                            <div class="iconbox-wrap-icon">
+                                <i class="icon  icon-group"></i>
+                            </div>
+                            <div class="iconbox-wrap-content">
+                                @*<h5><span>2200</span> </h5>*@
+                                <div class="iconbox-wrap-text">ПРОВЕРЕННЫЕ ПРОДАВЦЫ</div>
+                            </div>
+                        </div>
+                        <!-- /..iconbox -->
+                    </div><!--/.iconbox-wrap-->
+                </div>
+
+                <div class="col-sm-3 col-xs-6 col-xxs-12">
+                    <div class="iconbox-wrap">
+                        <div class="iconbox">
+                            <div class="iconbox-wrap-icon">
+                                <i class="icon  icon-th-large-1"></i>
+                            </div>
+                            <div class="iconbox-wrap-content">
+                                @*<h5><span>100</span> </h5>*@
+                                <div class="iconbox-wrap-text">КАТЕГОРИИ</div>
+                            </div>
+                        </div>
+                        <!-- /..iconbox -->
+                    </div><!--/.iconbox-wrap-->
+                </div>
+
+                <div class="col-sm-3 col-xs-6  col-xxs-12">
+                    <div class="iconbox-wrap">
+                        <div class="iconbox">
+                            <div class="iconbox-wrap-icon">
+                                <i class="icon  icon-map"></i>
+                            </div>
+                            <div class="iconbox-wrap-content">
+                                @*<h5><span>700</span> </h5>*@
+                                <div class="iconbox-wrap-text">ГЕОЛОКАЦИИ</div>
+                            </div>
+                        </div>
+                        <!-- /..iconbox -->
+                    </div><!--/.iconbox-wrap-->
+                </div>
+
+                <div class="col-sm-3 col-xs-6 col-xxs-12">
+                    <div class="iconbox-wrap">
+                        <div class="iconbox">
+                            <div class="iconbox-wrap-icon">
+                                <i class="icon icon-facebook"></i>
+                            </div>
+                            <div class="iconbox-wrap-content">
+                                @*<h5><span>50,000</span> </h5>*@
+                                <div class="iconbox-wrap-text">СООБЩЕСТВО</div>
+                            </div>
+                        </div>
+                        <!-- /..iconbox -->
+                    </div><!--/.iconbox-wrap-->
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- /.page-info -->
+
+    <div class="page-bottom-info">
+        <div class="page-bottom-info-inner">
+
+            <div class="page-bottom-info-content text-center">
+                <h1>Если у вас есть вопросы, комментарии или пожелания, позвоните +7 (926) 739-07-03</h1>
+                <a class="btn  btn-lg btn-primary-dark" href="tel:+7 (926) 739-07-03">
+                    <i class="icon-mobile"></i> <span class="hide-xs color50">Позвонить:</span> +7 (926) 739-07-03
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

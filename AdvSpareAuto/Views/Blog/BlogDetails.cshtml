@@ -1,0 +1,160 @@
+﻿@using DAL
+@model DAL.BlogModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<!-- /.header -->
+
+<div class="intro-inner">
+    <div class="about-intro" style="background: url(/Photo/Index/@Model.Blog.ImageId) no-repeat center; background-size: cover; ">
+        <div class="dtable hw100">
+            <div class="dtable-cell hw100">
+                <div class="container text-center animated fadeInDown">
+
+                    <h1 class="intro-title">@Model.Blog.Name</h1>
+
+                    <h2>@Model.Blog.Description</h2>
+                    <div class="row search-row animated fadeInUp">
+
+                            <div class="col-lg-4 col-sm-offset-2 col-sm-4 search-col relative ">
+                                <input type="text" value="" placeholder="Что ищем?" class="form-control locinput input-rel searchtag-input ">
+                            </div>
+
+
+                            <div class="col-lg-4 col-sm-4 search-col">
+                                <button class="btn btn-primary btn-search btn-block"><i class="icon-mail-1"></i><strong>Поиск по блогу</strong></button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.about-intro -->
+
+</div>
+<!-- /.intro-inner -->
+
+<div class="main-container inner-page">
+    <div class="container">
+        <div class="section-content">
+            <div class="row ">
+                <div class="col-sm-8 blogLeft">
+                    <div class="blog-post-wrapper">
+                        @if (Request.IsAuthenticated && @Model.Blog.UserId == WebSecurity.CurrentUserId)
+                        {
+                            <text>
+                        <a href="/Blog/CreatePost/@Model.Blog.Id" class="btn btn-primary btn-block"><i class="icon-mail-1"></i><strong>Создать пост</strong></a>
+                    </text>
+                        }
+                        @foreach (var item in @Model.Blog.Posts)
+                        {
+                            <article class="blog-post-item">
+                                <div class="inner-box">
+                                    <!--blog image-->
+                                    <div class="blog-post-img">
+
+                                        <a href="/Blog/BlogPost/@item.Id">
+                                            <figure>
+                                                <img class="img-responsive" alt="blog-post image" src="/Photo/Index/@item.MainPhotoId">
+                                            </figure>
+                                        </a>
+                                    </div>
+
+                                    <!--blog content-->
+
+                                    <div class="blog-post-content-desc">
+
+
+                                        <span class="info-row blog-post-meta">
+                                            <span class="date"><i class=" icon-clock"> </i> @item.LastEditDate </span>  -
+                                            <span class="author"> <i class="fa fa-user"></i>  <a rel="author" title="Посты @item.UserName" href="#">@item.UserName</a> </span>  -
+                                            <span class="item-location"><i class="fa fa-comments"></i> Комментарии <a href="#">0</a> </span>
+                                        </span>
+
+
+                                        <div class="blog-post-content">
+                                            <h2>
+                                                <a href="/Blog/BlogPost/@item.Id">@item.Topic</a>
+                                            
+                                            </h2>
+                                            <p>
+                                                @Html.Raw(@item.Body)
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-md-12 clearfix blog-post-bottom">
+                                                    <a class="btn btn-primary  pull-left" href="/Blog/BlogPost/@item.Id">Прочитать публикацию</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </article>
+                        }
+                    </div> <!--/.blog-post-wrapper-->
+                </div><!--blogLeft-->
+
+
+                <div class="col-sm-4 blogRight page-sidebar">
+                    <aside>
+                        <div class="inner-box">
+                            <div class="categories-list  list-filter">
+                                <h5 class="list-title uppercase"><strong><a href="#">Категории</a></strong></h5>
+                                <ul class=" list-unstyled list-border ">
+                                    @foreach (var item in Model._categories)
+                                    {
+                                        <li><a href=""><span class="title">@item.Name</span><span class="count"></span></a> </li>
+                                    }
+                                </ul>
+                            </div>
+                            <!--/.categories-list-->
+                            <div class="categories-list  list-filter">
+                                <h5 class="list-title uppercase">
+                                    <strong>
+                                        <a href="#">
+                                            Недавние популярные публикации
+                                        </a>
+                                    </strong>
+                                </h5>
+
+
+
+                                <div class="blog-popular-content">
+                                    <div class="item-list">
+
+                                        @foreach (var item in Model.Recent)
+                                        {
+                                            <div class="col-sm-4 col-xs-4 no-padding photobox">
+                                                <div class="add-image">
+                                                    <a href="/Blog/BlogPost/@item.Id"><img class="no-margin" src="/Photo/Index/@item.MainPhotoId" alt="img"></a>
+                                                </div>
+                                            </div>
+                                        <!--/.photobox-->
+                                            <div class="col-sm-8 col-xs-8 add-desc-box">
+                                                <div class="add-details">
+                                                    <h5 class="add-title"><a href="/Blog/BlogPost/@item.Id">@item.Topic</a></h5>
+                                                    <span class="info-row"><span class="date"><i class=" icon-clock"> </i> @item.LastEditDate </span> </span>
+                                                </div>
+                                            </div>
+                                        <!--/.add-desc-box-->
+                                        }
+
+                                    </div>
+                                </div>
+                                <div style="clear:both"></div>
+
+                                <!--/.categories-list-->
+                            </div>
+
+                        </div>
+                    </aside>
+                </div>
+                <!--page-sidebar-->
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,292 @@
+﻿@using DAL
+@model DAL.BlogPostModel
+<div class="intro-inner">
+    <div class="about-intro" style="background: url(/Photo/Index/@Model.Blog.ImageId) no-repeat center; background-size: cover; ">
+        <div class="dtable hw100">
+            <div class="dtable-cell hw100">
+                <div class="container text-center animated fadeInDown">
+
+                    <h1 class="intro-title">@Model.Blog.Name</h1>
+
+                    <h2>@Model.Blog.Description</h2>
+                    <div class="row search-row animated fadeInUp">
+                        @if (!Request.IsAuthenticated)
+                        {
+                            <div class="col-lg-4 col-sm-offset-2 col-sm-4 search-col relative ">
+                                <input type="text" value="" placeholder="Почта..." class="form-control locinput input-rel searchtag-input ">
+                            </div>
+
+
+                            <div class="col-lg-4 col-sm-4 search-col">
+                                
+                            </div>
+                        }
+                        else
+                        {
+                         
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/.about-intro -->
+</div>
+<!-- /.intro-inner -->
+<div class="main-container inner-page">
+    <div class="container">
+        <div class="section-content">
+            <div class="row ">
+                <div class="col-sm-8 blogLeft">
+                    <div class="blog-post-wrapper">
+                      
+                        <a href="/Blog/BlogDetails/@Model.Blog.Id" class="btn btn-primary btn-block"><i class="icon-mail-1"></i><strong>Вернуться в блог</strong></a>
+
+                            <article class="blog-post-item">
+                                <div class="inner-box">
+
+
+                                    <!--blog image-->
+                                    <div class="blog-post-img">
+
+                                        <a href="/Blog/BlogPost/@Model.Post.Id">
+                                            <figure>
+                                                <img class="img-responsive" alt="blog-post image" src="/Photo/Index/@Model.Post.MainPhotoId">
+                                            </figure>
+                                        </a>
+                                    </div>
+
+                                    <!--blog content-->
+
+                                    <div class="blog-post-content-desc">
+                                        <span class="info-row blog-post-meta">
+                                            <span class="date"><i class=" icon-clock"> </i>@Model.Post.LastEditDate</span>  -
+                                            <span class="author"> <i class="fa fa-user"></i>@Html.ActionLink(Model.UserName ?? "Пользователь", "UserBlog", "Blog", new { id = @Model.Post.UserId })</span>  -
+                                            <span class="item-location"><i class="fa fa-comments"></i>Комментарии:<a href="#"> @Model.CommentCount</a> </span>
+                                        </span>
+                                        <div class="blog-post-content">
+                                            <h2><a href="/Blog/BlogPost/@Model.Post.Id"></a>@Model.Post.Topic</h2>
+                                            <div class="blog-article-text">
+                                                <p>@Model.Post.Body</p>
+                                                <div class="clearfix">
+                                                    <div class="col-md-12  blog-post-bottom">
+
+                                                        <ul class="share-this-post">
+                                                            <li>Поделиться: </li>
+
+                                                            <li>
+                                                                <a class="google-plus"><i class="fa fa-google-plus"></i>Google-plus</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="facebook"><i class="fa fa-facebook"></i>Facebook</a>
+                                                            </li>
+                                                            <li>
+                                                                <a><i class="fa fa-twitter"></i>Twitter</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="pinterest"><i class="fa fa-pinterest"></i>Pinterest</a>
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="blog-post-footer">
+
+
+
+                                                <div style="clear: both"></div>
+
+
+                                                <div class="inner ">
+
+
+
+
+
+
+
+                                                    <div class="blogs-comments-area">
+                                                        <h3 class="list-title"> <a href="" class="post-comments">@Model.CommentCount Комментариев</a></h3>
+
+                                                        <div class="blogs-comment-respond" id="respond">
+                                                            <ul class="blogs-comment-list">
+                                                                @foreach (var item in @Model.BlogCommentModels.Where(x => x.Comment.ParentId == 0))
+                                                            {
+                                                                    <li>
+                                                                        <div class="blogs-comment-wrapper">
+                                                                            <div class="blogs-comment-avatar">
+                                                                                <figure>
+                                                                                    <img alt="avatar" src="/Photo/Index/@item.UserAvatarId">
+                                                                                </figure>
+                                                                            </div>
+                                                                            <div class="blogs-comment-details">
+                                                                                <div class="blogs-comment-name">
+                                                                                    <a href="#">@item.UserName</a>
+                                                                                    <span class="blogs-comment-date">@item.Comment.CreatedDate</span>
+                                                                                </div>
+                                                                                <div class="blogs-comment-description">
+                                                                                    <p>
+                                                                                        @item.Comment.Text
+
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="blogs-comment-reply">
+                                                                                    <a href="#">Ответить</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <ul>
+                                                                            @foreach (var subitem in @Model.BlogCommentModels.Where(x => x.Comment.ParentId == item.Comment.Id))
+                                                                        {
+                                                                                <li>
+                                                                                    <div class="blogs-comment-wrapper">
+                                                                                        <div class="blogs-comment-avatar">
+                                                                                            <figure>
+                                                                                                <img alt="avatar" src="/Photo/Index/@subitem.UserAvatarId">
+                                                                                            </figure>
+                                                                                        </div>
+                                                                                        <div class="blogs-comment-details">
+                                                                                            <div class="blogs-comment-name">
+                                                                                                <a href="#">@subitem.UserName</a>
+                                                                                                <span class="blogs-comment-date">@subitem.Comment.CreatedDate</span>
+                                                                                            </div>
+                                                                                            <div class="blogs-comment-description">
+                                                                                                <p>
+                                                                                                    @subitem.Comment.Text
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+                                                                        }
+                                                                        </ul>
+                                                                    </li>
+                                                            }
+                                                            </ul>     <!--Comment list End-->
+
+
+
+
+
+
+                                                            <h3 class="blogs-comment-reply-title list-title">Оставить комментарий</h3>
+
+                                                            @using (Html.BeginForm("PostComment", "Blog", new {@PostId = @Model.Post.Id }, FormMethod.Post, new { @class = "blogs-comment-form" }))
+                                                        {
+                                                                @Html.AntiForgeryToken()
+                                                                @Html.ValidationSummary()
+
+                                                            if (Request.IsAuthenticated)
+                                                            {
+                                                                <div class="form-group">
+                                                                    <textarea class="form-control" placeholder="Text" id="PostComment" name="PostComment"></textarea>
+                                                                </div>
+
+                                                                <button type="submit" class="btn-success btn btn-lg"> Отправить </button>
+                                                            }
+
+                                                            else
+                                                            {
+                                                                <text>
+                                                                    @Html.ActionLink("Войдите", "Login", "Account") или @Html.ActionLink("Зарегистрируйтесь", "Register", "Account"), чтобы оставлять комментарии.
+                                                                </text>
+                                                            }
+                                                        }
+
+
+
+                                                        </div><!-- #respond -->
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+
+
+
+
+</div> <!--/.blog-post-wrapper-->
+                </div><!--blogLeft-->
+
+
+        
+                        <div class="col-sm-4 blogRight page-sidebar">
+                            <aside>
+                                <div class="inner-box">
+                                    <div class="categories-list  list-filter">
+                                        <h5 class="list-title uppercase"><strong><a href="#">Категории</a></strong></h5>
+                                        <ul class=" list-unstyled list-border ">
+                                            @foreach (var item in Model._categories)
+                                            {
+                                                <li><a href=""><span class="title">@item.Name</span><span class="count"></span></a> </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <!--/.categories-list-->
+                                    <div class="categories-list  list-filter">
+                                        <h5 class="list-title uppercase">
+                                            <strong>
+                                                <a href="#">
+                                                    Недавние популярные публикации
+                                                </a>
+                                            </strong>
+                                        </h5>
+
+
+
+                                        <div class="blog-popular-content">
+                                            <div class="item-list">
+
+                                                @foreach (var item in Model.Recent)
+                                                {
+                                                    <div class="col-sm-4 col-xs-4 no-padding photobox">
+                                                        <div class="add-image">
+                                                            <a href="/Blog/BlogDetails/@item.Id"><img class="no-margin" src="/Photo/Index/@item.MainPhotoId" alt="img"></a>
+                                                        </div>
+                                                    </div>
+                                        <!--/.photobox-->
+                                                    <div class="col-sm-8 col-xs-8 add-desc-box">
+                                                        <div class="add-details">
+                                                            <h5 class="add-title"><a href="/Blog/BlogPost/@item.Id">@item.Topic</a></h5>
+                                                            <span class="info-row"><span class="date"><i class=" icon-clock"> </i> @item.LastEditDate </span> </span>
+                                                        </div>
+                                                    </div>
+                                        <!--/.add-desc-box-->
+                                                }
+
+                                            </div>
+                                        </div>
+                                        <div style="clear:both"></div>
+
+                                        <!--/.categories-list-->
+                                    </div>
+
+                                </div>
+                            </aside>
+                        </div>
+                   
+                </div>
+                <!--page-sidebar-->
+            </div>
+        </div>
+
+    </div>
+
+<!-- /.main-container -->
+<div class="parallaxbox about-parallax-bottom">
+    <div class="container">
+
+    </div>
+</div>

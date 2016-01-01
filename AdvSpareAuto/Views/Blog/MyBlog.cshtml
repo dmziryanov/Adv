@@ -1,0 +1,41 @@
+﻿@model IEnumerable<DAL.Blog>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<p>
+    <h1>
+        Мои блоги
+    </h1>
+    <div class="btn btn-primary small">  @Html.ActionLink("Создать еще", "Create", new { @class = "btn btn-primary btn-search btn-block" })</div>
+</p>
+<table>
+    <tr>
+        <th>
+            Название
+        </th>
+        <th>
+            Описание
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr style="background: /Photo/Thumb/@item.ImageId">
+        <td>
+            @Html.ActionLink(item.Name, "BlogDetails","Blog",new { Id = item.Id }, null)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+      @*  
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>*@
+    </tr>
+}
+
+</table>
