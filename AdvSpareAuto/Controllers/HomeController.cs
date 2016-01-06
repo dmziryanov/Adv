@@ -24,6 +24,7 @@ namespace AdvSpareAuto.Controllers
             _blogRepository = blogRepository;
         }
 
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = 60)]
         public ActionResult Index()
         {
             ViewBag.Message = "Объявления, блоги, отзывы, подать объявление, создать блог, оставить отзыв";

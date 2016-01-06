@@ -99,7 +99,7 @@ namespace AdvSpareAuto.Controllers
             m._categories = AdvRepository._categories;
             m.Recent = _blogRepository.GetRecent();
                 
-            ViewBag.Message = blog.Name;
+            ViewBag.Message = "Блог " + blog.Name;
             return View(m);
         }
 

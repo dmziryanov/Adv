@@ -15,6 +15,21 @@ namespace DAL
         public RegisterModel CurrentUser;
 
         public AdvModel[] _featuredList;
+
+        public string topAdsVisible
+        {
+            get { return IsFeatured == 3 ? "visibility:visible" : "visibility:hidden"; }
+        }
+
+        public string urgentAdsVisible
+        {
+            get { return IsFeatured == 2 ? "visibility:visible" : "visibility:hidden"; }
+        }
+
+        public string featuredAdsVisible
+        {
+            get { return IsFeatured == 4 ? "visibility:visible" : "visibility:hidden"; }
+        }
         
         
         public IEnumerable<CategoryCount> Popular;
@@ -44,7 +59,7 @@ namespace DAL
             {
                 return
 
-                    String.Format("{0:0,0}", Price) + " –”¡.";
+                    String.Format("{0:0,0,0}", Price) + " –”¡.";
             }
         }
         public int Location { get; set; }
@@ -89,5 +104,6 @@ namespace DAL
         public Review TopReview { get; set; }
         public Blog TopBlog { get; set; }
         public int ViewCount { get; set; }
+        public string KeyWords { get; set; }
     }
 }

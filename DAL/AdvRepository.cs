@@ -35,6 +35,51 @@ namespace DAL
             return _tmpList;
         }
 
+        public IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, int pageSize, int currentPage, string SortBy)
+        {
+
+            var queryExpr = "select * from dbo.Adv where type > -1 ";
+            if (type > 0)
+                queryExpr += "and type = " + (int)type;
+            
+            if (condition > 0)
+                queryExpr += "and condition = " + (int)condition;
+
+            if (!string.IsNullOrEmpty(keywords))
+                queryExpr += "and name like {0} ";
+
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<AdvModel>(queryExpr + SortBy, "%" + keywords + "%").ToList();
+            }
+        }
+
+        public IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, int cat, int pageSize, int currentPage,
+            string SortBy)
+        {
+            var queryExpr = "select * from dbo.Adv where type > -1 ";
+            if (type > 0)
+                queryExpr += "and type = " + (int)type;
+
+            if (condition > 0)
+                queryExpr += "and condition = " + (int)condition;
+
+            queryExpr += "and subcategory = " + cat + " ";
+
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<AdvModel>(queryExpr + SortBy).ToList();
+            }
+        }
+
+        public IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, int pageSize, int currentPage, string SortBy)
+        {
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<AdvModel>("select * from dbo.Adv where Name type= {0} and condition = {1} {2}", type, condition, SortBy).ToList();
+            }
+        }
+
         public int GetFilteredSortedPageCount(AdvType type, AdvCondition condition, string filterString, int pageSize)
         {
             using (_advContext = new AdvContext())
@@ -48,11 +93,8 @@ namespace DAL
         public AdvModel Get(int id)
         {
             var model = new AdvModel();
-       
             if (id != 0)
-            
             {
-            
                 using (_advContext = new AdvContext())
                 {
                     model = _advContext.Database.SqlQuery<AdvModel>("select * from dbo.adv where id = {0}", id).FirstOrDefault();
@@ -63,10 +105,11 @@ namespace DAL
                 model.LocationName = _locations.FirstOrDefault(x => x.CityId == model.Location).Name;
                 model.CategoryName = _subCategories.FirstOrDefault(x => x.ID == model.Category).Name;
             }
-
+            
             model._subCategories = _subCategories;
             model._categories = _categories;
             model._locations = _locations.OrderBy(x => x.Name);
+            model._countries = _countries.OrderBy(x => x.CountryName);
 
             using (_advContext = new AdvContext())
             {
@@ -240,6 +283,14 @@ namespace DAL
                 _ctx.Database.ExecuteSqlCommand("update dbo.adv set ViewCount={1} where Id = {0}", toInt32, viewCount + 1);
             }
         }
+
+        public void SaveSearch(int currentUserId, string keywords, string location)
+        {
+            using (var _ctx = new AdvContext())
+            {
+                _ctx.Database.ExecuteSqlCommand("insert into UserSearch (currentUserId,keywords, location) values ({0},{1},{2})", currentUserId, keywords, location);
+            }
+        }
     }
 
     public abstract class BaseRepository
@@ -248,6 +299,7 @@ namespace DAL
         public CommonContext _commonContext;
         public static IEnumerable<AdvModel> _tmpList;
         public static IEnumerable<Location> _locations;
+        public static IEnumerable<Country> _countries;
         public static IEnumerable<Category> _subCategories;
         public static IEnumerable<Category> _categories;
         public static IEnumerable<RegisterModel> _users;
@@ -265,6 +317,8 @@ namespace DAL
             using (_commonContext = new CommonContext())
             {
                 _locations = _commonContext.Database.SqlQuery<Location>("select * from dbo.Cities").ToList();
+                _countries = _commonContext.Database.SqlQuery<Country>("select * from dbo.Country").ToList();
+                
             }
 
         }

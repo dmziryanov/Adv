@@ -5,7 +5,7 @@
     maxPages = 1;
     defaultPageNum = 1;
 
-    String.format = function() {
+    String.format = function () {
         var theString = arguments[0];
         for (var i = 1; i < arguments.length; i++) {
             var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
@@ -24,11 +24,11 @@
 
     function refreshPager(pageNum, nextOper) {
         $.ajax({
-            url: "/Adv/GetPagesData",
+            url: String.format("/Adv/GetPagesData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&minPrice={6}&maxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#country span").val(), $("#category span").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs .active").attr("i"), $("#condition").val()),
             method: 'GET',
             datatype: 'json',
             data: { query: 'test' },
-            success: function(pdata) {
+            success: function (pdata) {
                 pagedata = pdata;
                 maxPages = pdata.length;
                 if (pageNum < 1) pageNum = 1;
@@ -39,7 +39,13 @@
                 $(".pageItem:eq(" + pageNum + ")").addClass("selectedItem");
 
             }
-        }).success(function() {
+        }).success(function () {
+            $('.pager-btn').each(function(index, el) {
+                
+                if (el.innerHTML == pageNum) {
+                    $(el.parentNode).addClass("active");
+                }
+            });
             nextOper(currentPage);
         });
 
@@ -47,10 +53,10 @@
     }
 
     function refreshBooks(pageNum) {
-        $.getJSON(String.format("/Adv/GetData?currentPage={0}&SortBy={1}&FilterBy={2}&Filter={3}", pageNum, $("#SortBy option:selected").text(), $("#FilterBy option:selected").text(), $("#FilterString").val()),
-            function(booksdata) {
-                booksdata.forEach(function(el) {
-                    el.Delete = function() {
+        $.getJSON(String.format("/Adv/GetData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&minPrice={6}&maxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#country span").val(), $("#category span").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs .active").attr("i"), $("#condition").val()),
+            function (booksdata) {
+                booksdata.forEach(function (el) {
+                    el.Delete = function () {
                         $.ajax({
                             url: el.deleteurl
                         });
@@ -74,49 +80,84 @@
 
     viewModel = new ViewModel();
 
-    $(document).ready(function() {
+    function LoadData() {
         GetServerData(defaultPageNum);
-        $(".dropdown").bind("change", function() { GetServerData(defaultPageNum); });
+        $(".dropdown").bind("change", function () { GetServerData(defaultPageNum); });
+
+    }
+
+    $(document).ready(function () {
+        LoadData();
         ko.applyBindings(viewModel);
+
+        $('#SearchBtn').click(function () {
+            LoadData();
+        });
+
+        $(document).ready(function () {
+            filterCountry = function (id) {
+                $('#id-location option').attr('style', 'visibility:hidden; display:none;');
+                $('#id-location option').first().attr('style', 'visibility:visible; display:block;');
+                $('[countryid="' + id + '"').attr('style', 'visibility:visible; display:block;');
+            }
+            filterCountry(643); //Russia
+        });
     });
 </script>
 
 @model DAL.AdvModel
-
+@*<form action="/Category/Search/" method="GET">*@
 <div class="search-row-wrapper">
     <div class="container ">
-        <form action="#" method="GET">
-            <div class="col-sm-3">
-                <input class="form-control keyword" type="text" placeholder="Что найти? Например: мобильные">
-            </div>
-            <div class="col-sm-3">
-                <select class="form-control selecter" name="category" id="search-category">
-                    <option value="0" selected="selected">Все категории</option>
-                    @foreach (var item in Model._categories)
-                    {
-                        <option value="@item.ID" style="background-color: #E9E9E9; font-weight: bold;" disabled="disabled"> - @item.Name - </option>
+        <div class="col-sm-3">
+            <input id="keywords" name="keywords" class="form-control selecter" type="text" placeholder="Что найти? Например: мобильные" value="@Model.KeyWords">
+        </div>
+        <div class="col-sm-3">
+            <select class="form-control selecter" name="category" id="search-category">
+                <option value="0" selected="selected">Все категории</option>
+                @foreach (var item in Model._categories)
+                {
+                    <option value="@item.ID" style="background-color: #E9E9E9; font-weight: bold;" disabled="disabled"> - @item.Name - </option>
 
-                        foreach (var subitem in Model._subCategories.Where(x => x.Category_Id == item.ID))
-                        {
-                            <option value="@subitem.ID">@subitem.Name</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="col-sm-3">
-                <select class="form-control selecter" name="location" id="id-location">
-                    <option selected="selected" value="">Все</option>
-                    @foreach (var item in Model._locations.OrderBy(x=> x.Name))
+                    foreach (var subitem in Model._subCategories.Where(x => x.Category_Id == item.ID))
                     {
-                        <option value="@item.CityId">@item.Name</option>
+                        <option value="@subitem.ID">@subitem.Name</option>
                     }
-                    <option value="-1">Другое</option>
-                </select>
-            </div>
-            <div class="col-sm-3">
-                <button class="btn btn-block btn-primary  "> <i class="fa fa-search"></i> </button>
-            </div>
-        </form>
+                }
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control selecter" onchange="filterCountry(this.value);" id="Country" name="Country" class="form-control">
+                @foreach (var item in Model._countries)
+                {
+                    <option @if (@item.CountryId == 643) { <text>
+                            selected="selected"
+                            </text>         } value="@item.CountryId">
+                        @item.CountryName
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="location" id="id-location">
+                <option @if (string.IsNullOrEmpty(@Model.LocationName)) { <text> selected="selected" </text>        } value="-1">Все</option>
+
+                @foreach (var item in Model._locations.OrderBy(x => x.Name))
+                {
+                    <option style="visibility: hidden; display: block;" countryid="@item.countryId"
+                            @if (Model.LocationName == item.Name) {  <text>
+                            selected="selected"
+                            </text>      } value="@item.CityId">
+                        @item.Name
+                    </option>
+
+                }
+                <option value="-1">Другое</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-block btn-primary" id="SearchBtn"> @*<i class="fa fa-search"></i>*@ Найти</button>
+        </div>
     </div>
 </div>
 <!-- /.search-row -->
@@ -128,18 +169,18 @@
                     <div class="inner-box">
                         <div class="locations-list list-filter">
                             <h5 class="list-title"><strong><a href="#">Ценовой диапазон</a></strong></h5>
-                            <form role="form" class="form-inline ">
-                                <div class="form-group col-sm-4 no-padding">
-                                    <input type="text" placeholder="1000" id="minPrice" class="form-control">
-                                </div>
-                                <div class="form-group col-sm-1 no-padding text-center"> - </div>
-                                <div class="form-group col-sm-4 no-padding">
-                                    <input type="text" placeholder="3000" id="maxPrice" class="form-control">
-                                </div>
-                                <div class="form-group col-sm-3 no-padding">
-                                    <button class="btn btn-default pull-right" type="submit"><i class="fa fa-search"></i></button>
-                                </div>
-                            </form>
+
+                            <div class="form-group col-sm-4 no-padding">
+                                <input type="text" placeholder="1000" name="minPrice" id="minPrice" class="form-control">
+                            </div>
+                            <div class="form-group col-sm-1 no-padding text-center"> - </div>
+                            <div class="form-group col-sm-4 no-padding">
+                                <input type="text" placeholder="3000" name="maxPrice" id="maxPrice" class="form-control">
+                            </div>
+                            <div class="form-group col-sm-3 no-padding">
+                                <button class="btn btn-default pull-right" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+
                             <div style="clear:both"></div>
                         </div>
                         <!--/.list-filter-->
@@ -188,42 +229,73 @@
                         <!--/.list-filter-->
                         <div class="locations-list  list-filter">
                             <h5 class="list-title"><strong><a href="#">Состояние</a></strong></h5>
+                            <label class="radio-inline" for="radios-2">
+                                <input name="condition" id="@Html.IdFor(x => x.condition)" value="0" checked="checked" type="radio">
+                                Все
+                            </label>
                             <label class="radio-inline" for="radios-0">
-                                <input name="type" id="@Html.IdFor(x => x.type)" value="2" checked="checked" type="radio">
+                                <input name="condition" id="@Html.IdFor(x => x.condition)" value="2" type="radio">
                                 Новое
                             </label>
                             <label class="radio-inline" for="radios-1">
-                                <input name="type" id="@Html.IdFor(x => x.type)" value="1" type="radio">
+                                <input name="condition" id="@Html.IdFor(x => x.condition)" value="1" type="radio">
                                 Б/У
                             </label>
-                            <label class="radio-inline" for="radios-2">
-                                <input name="type" id="@Html.IdFor(x => x.type)" value="0" type="radio">
-                                Все
-                            </label>
+
                         </div>
                         <!--/.list-filter-->
                         <div style="clear: both"></div>
                     </div>
 
+
+
+                    <div class="inner-box relative">
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- adv large long box -->
+                        <ins class="adsbygoogle"
+                             style="display: block"
+                             data-ad-client="ca-pub-9707096941681181"
+                             data-ad-slot="8754484356"
+                             data-ad-format="auto"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+
+                    </div>
                     <!--/.categories-list-->
                 </aside>
             </div>
             <!--/.page-side-bar-->
             <div class="col-sm-9 page-content col-thin-left">
+                <div class="inner-box relative">
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- adv large long box -->
+                    <ins class="adsbygoogle"
+                         style="display: block"
+                         data-ad-client="ca-pub-9707096941681181"
+                         data-ad-slot="8754484356"
+                         data-ad-format="auto"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+
+                </div>
                 <div class="category-list">
                     <div class="tab-box ">
 
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs add-tabs" id="ajaxTabs" role="tablist">
-                            <li class="active"><a href="#allAds" role="tab" data-toggle="tab">Все@*<span class="badge">228,705</span>*@</a></li>
-                            <li><a href="#businessAds" role="tab" data-toggle="tab">Бизнес@* <span class="badge">22,805</span>*@</a></li>
-                            <li><a href="#personalAds" role="tab" data-toggle="tab">Частные@* <span class="badge">18,705</span>*@</a></li>
+                            <li class="active"><a href="#allAds" id="allAds" role="tab" data-toggle="tab">Все@*<span class="badge">228,705</span>*@</a></li>
+                            <li><a href="#businessAds" id="businessAds" role="tab" data-toggle="tab">Бизнес@* <span class="badge">22,805</span>*@</a></li>
+                            <li><a href="#personalAds" id="personalAds" role="tab" data-toggle="tab">Частные@* <span class="badge">18,705</span>*@</a></li>
                         </ul>
                         <div class="tab-filter">
                             <select class="selectpicker" id="SortBy" data-style="btn-select" data-width="auto">
                                 <option value="0">Сортировать по</option>
                                 <option value="1">Цене: от большей к меньшей</option>
                                 <option value="2">Цене: от меньшей к большей</option>
+                                <option value="3">Дате: сначала новые</option>
+                                <option value="4">Дате: сначала старые</option>
                             </select>
                         </div>
                     </div>
@@ -234,7 +306,7 @@
                                 <div class="breadcrumb-list"> <a href="#" class="current"> <span>All ads</span></a> in New York <a href="#selectRegion" id="dropdownMenu1" data-toggle="modal"> <span class="caret"></span> </a> </div>
                             </div>*@
                         <div class="pull-right col-xs-6 text-right listing-view-action"> <span class="list-view active"><i class="  icon-th"></i></span> <span class="compact-view"><i class=" icon-th-list  "></i></span> <span class="grid-view "><i class=" icon-th-large "></i></span> </div>
-                        <div style="clear:both"></div>
+                        <div style="clear: both"></div>
                     </div>
                     <!--/.listing-filter-->
 
@@ -242,9 +314,15 @@
                         <div class="tab-content">
                             <div data-bind="foreach: Advs" class="tab-pane active" id="allAds">
                                 <div class="item-list">
-@*                                    <div class="cornerRibbons topAds">
+                                    <div data-bind="attr: { style: topAdsVisible }" class="cornerRibbons topAds">
+                                        <a href="#">Топовые предложения</a>
+                                    </div>
+                                    <div data-bind="attr: { style: featuredAdsVisible }" class="cornerRibbons featuredAds">
                                         <a href="#"> Top Ads</a>
-                                    </div>*@
+                                    </div>
+                                    <div data-bind="attr: { style: urgentAdsVisible }" class="cornerRibbons urgentAds">
+                                        <a href="#"> Top Ads</a>
+                                    </div>
                                     <div class="col-sm-2 no-padding photobox">
                                         <div class="add-image">
                                             @*<span data-bind="text: PhotoCount" class="photo-count"><i class="fa fa-camera"></i> </span>*@
@@ -284,20 +362,19 @@
                             </div>
                         </div>
                         <!--/.adds-wrapper-->
-
-                        <div class="tab-box  save-search-bar text-center"> <a href=""> <i class="icon-star-empty"></i>Сохранить результаты поиска</a> </div>
+                        @*<div class="tab-box  save-search-bar text-center"> <a href=""> <i class="icon-star-empty"></i>Сохранить результаты поиска</a> </div>*@
                     </div>
                     <div class="pagination-bar text-center">
                         <ul class="pagination">
-                            <li><a class="pagination-btn" onclick="GetServerData(currentPage - 1); " href="#"> <<</a></li>
+                            <li><a class="pagination-btn" onclick="GetServerData(currentPage - 1); "> <<</a></li>
                         </ul>
                         <ul class="pagination" data-bind="foreach: PagedItems">
                             <li>
-                                <a data-bind="text: pagenum" onclick="GetServerData(this.innerHTML); "></a>
+                                <a class="pager-btn" data-bind="text: pagenum" onclick="GetServerData(this.innerHTML);"></a>
                             </li>
                         </ul>
                         <ul class="pagination">
-                            <li><a class="pagination-btn" onclick="GetServerData(currentPage + 1); " href="#"> >> </a></li>
+                            <li><a class="pagination-btn" onclick="GetServerData(currentPage + 1); "> >> </a></li>
                         </ul>
                     </div>
                     <!--/.pagination-bar -->
@@ -306,14 +383,36 @@
                         <h2> У Вас есть что-нибудь что можно продать? </h2>
                         <h5>Продавайте онлайн бесплатно. Мы работаем, чтобы это было просто</h5>
                     </div>
-                    <div class="postadd">
-                        @Html.ActionLink("Добавить объявление", "PostAdv", "Adv", null, new { @class = "btn btn-block   btn-border btn-post btn-danger" })
-                    </div>
-                    <!--/.post-promo-->
 
+                    <div style="clear: both; padding: 35px">
+                        <div class="postadd">
+                            @Html.ActionLink("Добавить объявление", "PostAdv", "Adv", null, new { @class = "btn btn-block   btn-border btn-post btn-danger" })
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="col-sm-6">
+
+                        </div>
+                        <!--/.post-promo-->
+                    </div>
                 </div>
                 <!--/.page-content-->
 
+                <div style="clear: both; padding: 5px"></div>
+
+                <div class="inner-box relative">
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- adv large long box -->
+                    <ins class="adsbygoogle"
+                         style="display: block"
+                         data-ad-client="ca-pub-9707096941681181"
+                         data-ad-slot="8754484356"
+                         data-ad-format="auto"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
             </div>
         </div>
     </div>
@@ -401,4 +500,6 @@
                 </div>
             </div>
         </div>
-    </div></div>
+    </div>
+</div>
+@*</form>*@

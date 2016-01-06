@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace DAL
@@ -9,6 +10,7 @@ namespace DAL
         public string FileName { get; set; }
         public byte[] FileBody { get; set; }
         public int FileSize { get; set; }
+        public DateTime Created { get; set; }
 
     }
 }

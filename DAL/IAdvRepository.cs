@@ -8,7 +8,10 @@ namespace DAL
     public interface IAdvRepository
     {
         IEnumerable<AdvModel> GetAll();
-        int GetFilteredSortedPageCount(AdvType type, AdvCondition condition, string filterString, int pageSize);
+        /*AdvModel GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, int pageSize, double priceMin, double priceMax, int location, string country);*/
+
+        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, int pageSize, int currentPage, string SortBy);
+        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, int cat, int pageSize, int currentPage, string SortBy);
         AdvModel Get(int id);
         void Save(AdvModel adv);
         void AddMessage(SiteMessage model);
@@ -17,6 +20,7 @@ namespace DAL
         List<AdvModel> GetByUserId(int currentUserId);
         void Delete(int id);
         void IncreaseViewCount(int toInt32, int viewCount);
+        void SaveSearch(int currentUserId, string keywords, string location);
     }
 
     [Table("UserProfile")]

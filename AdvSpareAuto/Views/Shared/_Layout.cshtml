@@ -16,7 +16,7 @@
     <link href="/Content/Site.css" rel="stylesheet">
     <meta name="keyword" content="объявления;отзывы;блоги">
     <meta name="keyword" content="Сайт объявлений; подать объявление">
-    
+
     <!-- Custom styles for this template -->
     <link href="/assets/css/style.css" rel="stylesheet">
     <link href="/assets/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
@@ -25,7 +25,7 @@
     <link href="/assets/css/owl.carousel.css" rel="stylesheet">
     <link href="/assets/css/owl.theme.css" rel="stylesheet">
     <link href="/assets/css/skin-2.css" rel="stylesheet">
-    
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/knockout")
@@ -60,10 +60,10 @@
         var siteURL = 'adv.spare-auto.com';
 
         function addToFavorites(description) {
-            if (ie) {
+            if (window.opera && window.print) {
                 window.external.AddFavorite(siteURL, description);
             } else {
-                alert('Только для Internet Explorer 5+');
+                alert('У Вас отличный браузер, но добавлять в избранное автоматически он не умеет. Закройте окно и нажмите 2 клавиши: ctrl + D');
             }
         }
 
@@ -76,126 +76,106 @@
     <script src="/assets/js/owl.carousel.min.js"></script>
 </head>
 <body class="">
-    
+
     @RenderSection("scripts", required: false)
 
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <!-- adv large long box -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-9707096941681181"
-         data-ad-slot="8754484356"
-         data-ad-format="auto"></ins>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-            
-                
-                    <div>
-                        @Html.ActionLink("Главная", "Index", "Home") |
-                        @Html.ActionLink("Все блоги", "Index", "Blog") |
-                        @Html.ActionLink("Все отзывы", "All", "Review") |
-                        @Html.ActionLink("Поиск объявлений", "Search", "Category") |
-                        <a style="color: green" class="icon-certificate-1 icon-color-1" href="http://adv.spare-auto.com" rel="sidebar" onclick=" addToFavorites('Сайт объявлений, удобных блогов и отзывов') ">В избранное</a> |
-                        <a target="_blank" href="http://vk.com/spare_auto"><i class="fa fa-twitter fa-vk"></i> Мы ВКонтакте</a>
+    <div id="wrapper">
+
+
+        <div class="header">
+            <nav class="navbar navbar-site navbar-default" role="navigation">
+                <div class="container">
+
+                    <div class="navbar-header">
+                        <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span class="icon-bar"></span> <span class="icon-bar"></span></button>
+                        @Html.ActionLink(" ", "Index", "Home", null, new { @class = "logoicon" })
+                        @Html.ActionLink("ADV.SPARE-AUTO.COM", "Index", "Home", null, new { @class = "logo" })
                     </div>
-                
-            
-    
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            @if (!Request.IsAuthenticated)
+                            {
+                                <text>
 
-<div id="wrapper">
+                                    <li>@Html.ActionLink("Вход", "Login", "Account")</li>
+                                    <li>@Html.ActionLink("Регистрация", "Register", "Account")</li>
 
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
 
-    <div class="header">
-        <nav class="navbar navbar-site navbar-default" role="navigation">
-            <div class="container">
-              
-                <div class="navbar-header">
+                                    @*<li>@Html.ActionLink("Мой блог", "BlogDetails", "Blog", new {Id =  }
+                                        )</li>*@
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span>Мой Аккаунт</span> <i class="icon-user fa"></i> <i class=" icon-down-open-big fa"></i></a>
+                                        <ul class="dropdown-menu user-menu">
+                                            <li><a class="active" href="/Home/PrivateOffice"><i class="icon-folder-close"></i>Личный кабинет </a></li>
+                                            <li><a href="/Blog/MyBlog/@WebSecurity.CurrentUserId"><i class="icon-folder-close"></i> Мои блоги </a></li>
+                                            <li><a href="/Review/MyReviews/@WebSecurity.CurrentUserId"><i class="icon-folder-close"></i> Мои отзывы </a></li>
+                                            <li><a href="/Adv/MyAdv/@WebSecurity.CurrentUserId"><i class="icon-th-thumb"></i> Мои объявления </a></li>
+                                            <li><a href="/Adv/Favorite/@WebSecurity.CurrentUserId"><i class="icon-heart"></i> Избранные объявления </a></li>
+                                            <li><a href="/Adv/Saved/@WebSecurity.CurrentUserId"><i class="icon-star-circled"></i> Сохраненный поиск </a></li>
+                                            <li><a href="/Adv/Archive/@WebSecurity.CurrentUserId"><i class=" icon-folder-close"></i> Архивные объявления </a></li>
+                                            @*<li><a href="account-pending-approval-ads.html"><i class="icon-hourglass"></i> Ожидающие подтверждения </a></li>*@
+                                            @*<li><a href="statements.html"><i class=" icon-money "></i> Payment history </a></li>*@
+                                        </ul>
+                                    </li>
 
+                                    <li>@Html.ActionLink("Выход", "LogOff", "Account")</li>
+                                </text>
+                            }
+                            <li class="postadd">
+                                <div class="btn btn-block btn-border btn-post btn-danger fa add-details">@Html.ActionLink("+ Объявление", "PostAdv", "Adv", null, new { @class = "add-image" })</div>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Другие сервисы<i class=" icon-down-open-big fa"></i></a>
+                                <ul class="dropdown-menu user-menu">
+                                    <li class="postadd">
+                                        <div>@Html.ActionLink("+ Отзыв", "PostReview", "Review")</div>
+                                    </li>
+                                    <li class="postadd">
+                                        <div>@Html.ActionLink("+ Блог", "Create", "Blog")</div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
 
-                    <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span class="icon-bar"></span> <span class="icon-bar"></span></button>
-                    @Html.ActionLink(" ", "Index", "Home", null, new {@class = "logoicon"})
-                    @Html.ActionLink("ADV.SPARE-AUTO.COM", "Index", "Home", null, new {@class = "logo"})
-
+                    </div>
+                    <!--/.nav-collapse -->
                 </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        @if (!Request.IsAuthenticated)
-                        {
-                            <text>
+                <!-- /.container-fluid -->
+            </nav>
 
-                                <li>@Html.ActionLink("Вход", "Login", "Account")</li>
-                                <li>@Html.ActionLink("Регистрация", "Register", "Account")</li>
+            <div class="row clearfix" style="background: white">
 
-                            </text>
-                        }
-                        else
-                        {
-                            <text>
-                                
-                                @*<li>@Html.ActionLink("Мой блог", "BlogDetails", "Blog", new {Id =  }
-                            )</li>*@
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span>Мой Аккаунт</span> <i class="icon-user fa"></i> <i class=" icon-down-open-big fa"></i></a>
-                            <ul class="dropdown-menu user-menu">
-                                <li><a class="active" href="/Home/PrivateOffice"><i class="icon-folder-close"></i>Личный кабинет </a></li>
-                                <li><a href="/Blog/MyBlog/@WebSecurity.CurrentUserId"><i class="icon-folder-close"></i> Мои блоги </a></li>
-                                <li><a href="/Review/MyReviews/@WebSecurity.CurrentUserId"><i class="icon-folder-close"></i> Мои отзывы </a></li>
-                                <li><a href="/Adv/MyAdv/@WebSecurity.CurrentUserId"><i class="icon-th-thumb"></i> Мои объявления </a></li>
-                                <li><a href="/Adv/Favorite/@WebSecurity.CurrentUserId"><i class="icon-heart"></i> Избранные объявления </a></li>
-                                <li><a href="/Adv/Saved/@WebSecurity.CurrentUserId"><i class="icon-star-circled"></i> Сохраненный поиск </a></li>
-                                <li><a href="/Adv/Archive/@WebSecurity.CurrentUserId"><i class=" icon-folder-close"></i> Архивные объявления </a></li>
-                                @*<li><a href="account-pending-approval-ads.html"><i class="icon-hourglass"></i> Ожидающие подтверждения </a></li>*@
-                                @*<li><a href="statements.html"><i class=" icon-money "></i> Payment history </a></li>*@
-                            </ul>
-                        </li>
-
-                                <li>@Html.ActionLink("Выход", "LogOff", "Account")</li>
-                            </text>
-                        }
-                        <li class="postadd">
-                            <div class="btn btn-block btn-border btn-post btn-danger fa add-details">@Html.ActionLink("+ Объявление", "PostAdv", "Adv", null, new {@class = "add-image"})</div>
-                        </li>
-
-                        <li class="postadd">
-                            <div class="btn btn-primary small">@Html.ActionLink("+ Отзыв", "PostReview", "Review")</div>
-                        </li>
-                        <li class="postadd">
-                            <div class="btn btn-success small">@Html.ActionLink("+ Блог", "Create", "Blog")</div>
-                        </li>
-                    </ul>
-
+                <div class="col-md-12">
+                    @Html.ActionLink("Главная", "Index", "Home", new { @class = "list-title gray" }, null) |
+                    @Html.ActionLink("Все блоги", "Index", "Blog") |
+                    @Html.ActionLink("Все отзывы", "All", "Review") |
+                    @*@Html.ActionLink("Поиск объявлений", "Search", "Category") |*@
+                    <a style="color: green" class="icon-certificate-1 icon-color-1" href="http://adv.spare-auto.com" rel="sidebar" onclick=" addToFavorites('Сайт объявлений, удобных блогов и отзывов') ">В избранное</a> |
+                    <a target="_blank" href="http://vk.com/spare_auto"><i class="fa fa-twitter fa-vk"></i> Мы ВКонтакте</a>
                 </div>
-                <!--/.nav-collapse -->
             </div>
-            <!-- /.container-fluid -->
-        </nav>
-    </div>
-    <div id="body">
+        </div>
+        <div id="body">
 
-        @RenderSection("featured", required: false)
-        <section class="content-wrapper main-content clear-fix">
-            @RenderBody()
-        </section>
-    </div>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <!-- adv large long box -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-9707096941681181"
-         data-ad-slot="8754484356"
-         data-ad-format="auto"></ins>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-                        <div class="footer" id="footer">
-                            <div class="container">
-                                <ul class=" pull-left navbar-link footer-nav">
-                                    <li>
-                                        @Html.ActionLink("ГЛАВНАЯ", "Index", "Home") @Html.ActionLink("О НАС", "Contact", "Home") @*<a href="#"> Terms and Conditions </a> <a href="#"> Privacy Policy </a> <a href="contact.html"> Contact us </a>*@
-                                        @Html.ActionLink("FAQ", "FAQ", "Home")
-                                        @Html.ActionLink("ОТПРАВИТЬ СООБЩЕНИЕ", "Contact", "Home")
-                                        <script type="text/javascript">
+            @RenderSection("featured", required: false)
+            <section class="content-wrapper main-content clear-fix">
+                @RenderBody()
+            </section>
+        </div>
+
+        <div class="footer" id="footer">
+            <div class="container">
+                <ul class=" pull-left navbar-link footer-nav">
+                    <li>
+                        @Html.ActionLink("ГЛАВНАЯ", "Index", "Home") @Html.ActionLink("О НАС", "Contact", "Home") @*<a href="#"> Terms and Conditions </a> <a href="#"> Privacy Policy </a> <a href="contact.html"> Contact us </a>*@
+                        @Html.ActionLink("FAQ", "FAQ", "Home")
+                        @Html.ActionLink("ОТПРАВИТЬ СООБЩЕНИЕ", "Contact", "Home")
+                        <script type="text/javascript">
 <!--
                     document.write("<a href='//www.liveinternet.ru/click' " +
                         "target=_blank><img src='//counter.yadro.ru/hit?t14.6;r" +
@@ -207,101 +187,101 @@
                         " часа, посетителей за 24 часа и за сегодня' " +
                         "border='0' width='88' height='31'><\/a>")
 //--></script><!--/LiveInternet-->
-                                        <!-- Rating@Mail.ru counter -->
-                                        <script type="text/javascript">
-                                            var _tmr = window._tmr || (window._tmr = []);
-                                            _tmr.push({ id: "2727135", type: "pageView", start: (new Date()).getTime() });
-                                            (function (d, w, id) {
-                                                if (d.getElementById(id)) return;
-                                                var ts = d.createElement("script");
-                                                ts.type = "text/javascript";
-                                                ts.async = true;
-                                                ts.id = id;
-                                                ts.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//top-fwz1.mail.ru/js/code.js";
-                                                var f = function () {
-                                                    var s = d.getElementsByTagName("script")[0];
-                                                    s.parentNode.insertBefore(ts, s);
-                                                };
-                                                if (w.opera == "[object Opera]") {
-                                                    d.addEventListener("DOMContentLoaded", f, false);
-                                                } else {
-                                                    f();
-                                                }
-                                            })(document, window, "topmailru-code");
-                                        </script><noscript>
-                                            <div style="position: absolute; left: -10000px;">
-                                                <img src="//top-fwz1.mail.ru/counter?id=2727135;js=na" style="border: 0;" height="1" width="1" alt="Рейтинг@Mail.ru" />
-                                            </div>
-                                        </noscript>
-                                        <!-- Rating@Mail.ru logo -->
-                                        <a href="http://top.mail.ru/jump?from=2727135">
-                                            <img src="//top-fwz1.mail.ru/counter?id=2727135;t=479;l=1"
-                                                 style="border: 0;" height="31" width="88" alt="Рейтинг@Mail.ru" />
-                                        </a>
-                                        <!-- Yandex.Metrika counter -->
-                                        <!-- Yandex.Metrika informer -->
-                                        <a href="https://metrika.yandex.ru/stat/?id=34463650&amp;from=informer"
-                                           target="_blank" rel="nofollow">
-                                            <img src="https://informer.yandex.ru/informer/34463650/3_0_FFFFFFFF_EFEFEFFF_0_pageviews"
-                                                 style="width: 88px; height: 31px; border: 0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick=" try {Ya.Metrika.informer({ i: this, id: 34463650, lang: 'ru' });return false} catch (e) {} " />
-                                        </a>
-                                        <!-- /Yandex.Metrika informer -->
-                                        <!-- Yandex.Metrika counter -->
-                                        <script type="text/javascript">
-                                            (function (d, w, c) {
-                                                (w[c] = w[c] || []).push(function () {
-                                                    try {
-                                                        w.yaCounter34463650 = new Ya.Metrika({
-                                                            id: 34463650,
-                                                            clickmap: true,
-                                                            trackLinks: true,
-                                                            accurateTrackBounce: true
-                                                        });
-                                                    } catch (e) {
-                                                    }
-                                                });
-
-                                                var n = d.getElementsByTagName("script")[0],
-                                                    s = d.createElement("script"),
-                                                    f = function () { n.parentNode.insertBefore(s, n); };
-                                                s.type = "text/javascript";
-                                                s.async = true;
-                                                s.src = "https://mc.yandex.ru/metrika/watch.js";
-
-                                                if (w.opera == "[object Opera]") {
-                                                    d.addEventListener("DOMContentLoaded", f, false);
-                                                } else {
-                                                    f();
-                                                }
-                                            })(document, window, "yandex_metrika_callbacks");
-                                        </script>
-                                        <noscript>
-                                            <div>
-                                                <img src="https://mc.yandex.ru/watch/34463650" style="position: absolute; left: -9999px;" alt="" />
-                                            </div>
-                                        </noscript>
-                                        <!-- /Yandex.Metrika counter -->
-                                        <!-- /Yandex.Metrika counter -->
-                                        <!-- //Rating@Mail.ru logo -->
-                                    <!-- //Rating@Mail.ru counter -->
-                                        <!-- begin of Top100 code -->
-
-                                        <script id="top100Counter" type="text/javascript" src="http://counter.rambler.ru/top100.jcn?4397308"></script>
-                                        <noscript>
-                                            <a href="http://top100.rambler.ru/navi/4397308/">
-                                                <img src="http://counter.rambler.ru/top100.cnt?4397308" alt="Rambler's Top100" border="0" />
-                                            </a>
-
-                                        </noscript>
-                                        <!-- end of Top100 code -->
-                                </ul>
-                                <ul class=" pull-right navbar-link footer-nav">
-                                    <li>
-                                        &copy; 2015 ADV.SPARE-AUTO.COM
-                                    </li>
-                                </ul>
+                        <!-- Rating@Mail.ru counter -->
+                        <script type="text/javascript">
+                            var _tmr = window._tmr || (window._tmr = []);
+                            _tmr.push({ id: "2727135", type: "pageView", start: (new Date()).getTime() });
+                            (function (d, w, id) {
+                                if (d.getElementById(id)) return;
+                                var ts = d.createElement("script");
+                                ts.type = "text/javascript";
+                                ts.async = true;
+                                ts.id = id;
+                                ts.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//top-fwz1.mail.ru/js/code.js";
+                                var f = function () {
+                                    var s = d.getElementsByTagName("script")[0];
+                                    s.parentNode.insertBefore(ts, s);
+                                };
+                                if (w.opera == "[object Opera]") {
+                                    d.addEventListener("DOMContentLoaded", f, false);
+                                } else {
+                                    f();
+                                }
+                            })(document, window, "topmailru-code");
+                        </script><noscript>
+                            <div style="position: absolute; left: -10000px;">
+                                <img src="//top-fwz1.mail.ru/counter?id=2727135;js=na" style="border: 0;" height="1" width="1" alt="Рейтинг@Mail.ru" />
                             </div>
-                        </div>
-                    </div>
+                        </noscript>
+                        <!-- Rating@Mail.ru logo -->
+                        <a href="http://top.mail.ru/jump?from=2727135">
+                            <img src="//top-fwz1.mail.ru/counter?id=2727135;t=479;l=1"
+                                 style="border: 0;" height="31" width="88" alt="Рейтинг@Mail.ru" />
+                        </a>
+                        <!-- Yandex.Metrika counter -->
+                        <!-- Yandex.Metrika informer -->
+                 @*       <a href="https://metrika.yandex.ru/stat/?id=34463650&amp;from=informer"
+                           target="_blank" rel="nofollow">
+                            <img src="https://informer.yandex.ru/informer/34463650/3_0_FFFFFFFF_EFEFEFFF_0_pageviews"
+                                 style="width: 88px; height: 31px; border: 0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick=" try {Ya.Metrika.informer({ i: this, id: 34463650, lang: 'ru' });return false} catch (e) {} " />
+                        </a>*@
+                        <!-- /Yandex.Metrika informer -->
+                        <!-- Yandex.Metrika counter -->
+                       @* <script type="text/javascript">
+                            (function (d, w, c) {
+                                (w[c] = w[c] || []).push(function () {
+                                    try {
+                                        w.yaCounter34463650 = new Ya.Metrika({
+                                            id: 34463650,
+                                            clickmap: true,
+                                            trackLinks: true,
+                                            accurateTrackBounce: true
+                                        });
+                                    } catch (e) {
+                                    }
+                                });
+
+                                var n = d.getElementsByTagName("script")[0],
+                                    s = d.createElement("script"),
+                                    f = function () { n.parentNode.insertBefore(s, n); };
+                                s.type = "text/javascript";
+                                s.async = true;
+                                s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+                                if (w.opera == "[object Opera]") {
+                                    d.addEventListener("DOMContentLoaded", f, false);
+                                } else {
+                                    f();
+                                }
+                            })(document, window, "yandex_metrika_callbacks");
+                        </script>*@
+                       @* <noscript>
+                            <div>
+                                <img src="https://mc.yandex.ru/watch/34463650" style="position: absolute; left: -9999px;" alt="" />
+                            </div>
+                        </noscript>*@
+                        <!-- /Yandex.Metrika counter -->
+                        <!-- /Yandex.Metrika counter -->
+                        <!-- //Rating@Mail.ru logo -->
+                        <!-- //Rating@Mail.ru counter -->
+                        <!-- begin of Top100 code -->
+
+                     @*   <script id="top100Counter" type="text/javascript" src="http://counter.rambler.ru/top100.jcn?4397308"></script>
+                        <noscript>
+                            <a href="http://top100.rambler.ru/navi/4397308/">
+                                <img src="http://counter.rambler.ru/top100.cnt?4397308" alt="Rambler's Top100" border="0" />
+                            </a>
+
+                        </noscript>*@
+                        <!-- end of Top100 code -->
+                </ul>
+                <ul class=" pull-right navbar-link footer-nav">
+                    <li>
+                        &copy; 2015 ADV.SPARE-AUTO.COM
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

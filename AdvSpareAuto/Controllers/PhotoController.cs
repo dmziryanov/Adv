@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using RmsAuto.Store.Cms.Misc.Thumbnails;
 
 namespace AdvSpareAuto.Controllers
 {
@@ -26,31 +27,73 @@ namespace AdvSpareAuto.Controllers
         // GET: /Photo/
 
 
-        public ActionResult Index(int id)
+        public void Index(int id)
         {
             byte[] imageData = _imageRepository.Get(id);
-            if (imageData == null) return null;
-            Stream stream = new MemoryStream(imageData);
-            //Image objImage = Bitmap.FromStream(stream);
-            // var objImage = Crop(objImage, objImage.Width, objImage.Height - 20);
-            //objImage.Save(Server.MapPath("~/App_data/img.jpg"));
-            return File(new MemoryStream(imageData), "image/jpeg");
-          //  return FileResult(objImage);
-                // Might need to adjust the content type based on your actual image type
+            if (imageData == null) return;
+
+            int fileID = id;
+            string thumbnailGeneratorKey = "largephoto";
+
+            ThumbnailInfo thumbnail = ThumbnailGenerator.CropImage(fileID, thumbnailGeneratorKey);
+            if (thumbnail == null)
+            {
+                throw new HttpException((int)HttpStatusCode.NotFound, "Not Found");
+            }
+            else
+            {
+                string etag = thumbnail.LastModifiedDate.GetHashCode().ToString("x");
+
+                Response.ContentType = thumbnail.ContentType;
+                Response.Cache.SetCacheability(HttpCacheability.ServerAndPrivate);
+                Response.Cache.SetETag(etag);
+                
+                if (Request.Headers["If-None-Match"] != etag)
+                {
+                    Response.WriteFile(thumbnail.FilePath);
+                }
+                else
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotModified;
+                }
+            }
 
         }
 
-        public ActionResult Thumb(int id)
+        public void Thumb(int id)
         {
             byte[] imageData = _imageRepository.Get(id);
-            if (imageData == null) return null;
+            if (imageData == null) return;
 
 
-            return File(new MemoryStream(imageData), "image/jpeg");
-            /*Image objImage = Image.FromStream(new MemoryStream(imageData));
-            objImage = objImage.GetThumbnailImage(100, objImage.Width / objImage.Height * 100, () => { return true; }, new IntPtr(1));
+            int fileID = id;
+            string thumbnailGeneratorKey = "photo";
+        
 
-            return FileResult(objImage);*/
+
+            ThumbnailInfo thumbnail = ThumbnailGenerator.GetThumbnail(fileID, thumbnailGeneratorKey);
+            if (thumbnail == null)
+            {
+                throw new HttpException((int)HttpStatusCode.NotFound, "Not Found");
+            }
+            else
+            {
+                string etag = thumbnail.LastModifiedDate.GetHashCode().ToString("x");
+
+                Response.ContentType = thumbnail.ContentType;
+                Response.Cache.SetCacheability(HttpCacheability.ServerAndPrivate);
+                Response.Cache.SetETag(etag);
+                //context.Response.Cache.SetMaxAge( new TimeSpan( 0, 10, 0 ) );
+
+                if (Request.Headers["If-None-Match"] != etag)
+                {
+                    Response.WriteFile(thumbnail.FilePath);
+                }
+                else
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotModified;
+                }
+            }
         }
 
         private ActionResult FileResult(Image objImage)
