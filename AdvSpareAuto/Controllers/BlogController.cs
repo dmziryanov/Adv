@@ -49,7 +49,7 @@ namespace AdvSpareAuto.Controllers
                         var b = new byte[file.InputStream.Length];
                         file.InputStream.Read(b, 0, (int)file.InputStream.Length);
 
-                        model.ImageId = _advRepository.Save((new ImageFile() { FileBody = b, FileName = file.FileName, FileSize = b.Length}));
+                        model.ImageId = _advRepository.Save((new ImageFile() { FileBody = b, FileName = file.FileName, FileSize = b.Length, Created = DateTime.Now}));
                         model.UserId = WebSecurity.CurrentUserId;
                     }
                 }
@@ -76,7 +76,7 @@ namespace AdvSpareAuto.Controllers
                         var b = new byte[file.InputStream.Length];
                         file.InputStream.Read(b, 0, (int)file.InputStream.Length);
 
-                        model.MainPhotoId = _advRepository.Save((new ImageFile() { FileBody = b, FileName = file.FileName, FileSize = b.Length }));
+                        model.MainPhotoId = _advRepository.Save((new ImageFile() { FileBody = b, FileName = file.FileName, FileSize = b.Length, Created = DateTime.Now }));
                     }
                 }
                 catch (Exception ex)
@@ -140,6 +140,7 @@ namespace AdvSpareAuto.Controllers
             var blogPostModel = new BlogPostModel() { Post = post, BlogCommentModels = BlogCommentModels, Blog = _blog };
             blogPostModel.Recent = _blogRepository.GetRecent();
             blogPostModel._categories = AdvRepository._categories;
+            ViewBag.Message = blogPostModel.Blog.Name + " " + blogPostModel.Post.Topic;
             return View("BlogPost", blogPostModel);
 
         }

@@ -1,4 +1,5 @@
-﻿@model DAL.AdvModel
+﻿@using RmsAuto.TechDoc
+@model DAL.AdvModel
 
 <script>
     $(document).ready(function () {
@@ -7,8 +8,15 @@
             $('[countryid="' + id + '"').attr('style', 'visibility:visible; display:block;');
         }
 
-        filterCountry(643); //Ruissia
+        LoadModels = function (id) {
+            if (id == 49)
+                window.location.href = "/Adv/PostCarAdv/";
+        }
+
+        filterCountry(643); //Russia
     });
+
+
 
 </script>
 
@@ -36,21 +44,19 @@
 
                     <div class="inner-box category-content">
                         <h2 class="title-2 uppercase">
-                            <strong> <i class="icon-docs"></i>Добавление бесплатного объявления</strong>
+                            <strong> <i class="icon-docs"></i>Добавление объявления</strong>
                         </h2>
                         <div class="row">
                             <div class="col-sm-12">
                                 @using (Html.BeginForm("CreateAdv", "Adv", FormMethod.Post, new { @class = "form-horizontal", @enctype = "multipart/form-data" }))
                                 {
                                     @Html.ValidationSummary(true)
-
                                     <fieldset>
-                                        <!-- Select Basic -->
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Категория</label>
                                             <div class="col-md-8">
                                                 @Html.ValidationMessageFor(m => m.Category)
-                                                <select id="@Html.IdFor(x => x.Category)" name="Category" class="form-control">
+                                                <select onchange="LoadModels(this.value);" id="@Html.IdFor(x => x.Category)" name="Category" class="form-control">
                                                     <option value="0" selected="selected" disabled="disabled">Выберите... </option>
                                                     @foreach (var item in Model._categories)
                                                     {
@@ -64,6 +70,16 @@
                                                 </select>
                                             </div>
                                         </div>
+
+                                        <div id="brand">
+
+                                        </div>
+
+
+                                        <div id="model">
+
+                                        </div>
+
 
                                         <!-- Multiple Radios (inline) -->
                                         <div class="form-group">
@@ -107,18 +123,15 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="textarea">Описание</label>
                                             <div class="col-md-8">
-                                                <textarea class="form-control" id="Description" name="Description">Напишите что делает ваше предложение уникальным</textarea>
+                                                <textarea class="form-control" id="Description" placeholder="Напишите что делает ваше предложение уникальным" name="Description"></textarea>
                                             </div>
                                         </div>
 
                                         <!-- Prepended text-->
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="Price">Цена</label>
-                                            <div class="col-md-4">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">РУБ.</span>
-                                                    <input id="Price" name="Price" class="form-control" placeholder="0.00" required="" type="text">
-                                                </div>
+                                            <div class="col-md-5">
+                                                @Html.Partial("CurrencyControl", Model)
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="checkbox">
@@ -198,16 +211,14 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="seller-Location">Страна</label>
                                             <div class="col-md-8">
-                                                <select onchange="filterCountry(this.value);" id="Country" name="Country" class="form-control">
+                                                <select onchange=" filterCountry(this.value); " id="Country" name="Country" class="form-control">
                                                     @foreach (var item in Model._countries)
                                                     {
-                                                        <option @if (@item.CountryId == 643)
-                                                                {
-                                                                    <text>
-                                                                        selected="selected"
-                                                                    </text>  } value="@item.CountryId">
+                                                        <option @if (@item.CountryId == 643) { <text>
+                                                                selected="selected"
+                                                                </text>     } value="@item.CountryId">
                                                             @item.CountryName
-                                                            </option>
+                                                        </option>
                                                     }
                                                 </select>
                                             </div>
@@ -220,7 +231,7 @@
                                                 <select id="Location" name="Location" class="form-control">
                                                     @foreach (var item in Model._locations)
                                                     {
-                                                        <option style="visibility:hidden" countryid="@item.countryId" value="@item.CityId">@item.Name</option>
+                                                        <option style="visibility: hidden" countryid="@item.countryId" value="@item.CityId">@item.Name</option>
                                                     }
                                                 </select>
                                             </div>
@@ -311,7 +322,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="col-md-8">
-                                                                <a target="_blank" onclick="$('#publish').attr('style', 'visibility:visible'); " class="fa fa-paypal btn btn-primary small" href="https://paypal.me/DZyryanov">Оплатить</a>
+                                                                <a target="_blank" onclick=" $('#publish').attr('style', 'visibility:visible'); " class="fa fa-paypal btn btn-primary small" href="https://paypal.me/DZyryanov">Оплатить</a>
 
                                                             </div>
 
@@ -352,7 +363,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="inner-box relative">
+                  @*  <div class="inner-box relative">
                         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                         <!-- adv large long box -->
                         <ins class="adsbygoogle"
@@ -364,7 +375,7 @@
                             (adsbygoogle = window.adsbygoogle || []).push({});
                         </script>
 
-                    </div>
+                    </div>*@
 
                 </div>
                 <!-- /.page-content -->

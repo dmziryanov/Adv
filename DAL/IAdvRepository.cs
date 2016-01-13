@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,11 +9,16 @@ namespace DAL
     public interface IAdvRepository
     {
         IEnumerable<AdvModel> GetAll();
-        /*AdvModel GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, int pageSize, double priceMin, double priceMax, int location, string country);*/
 
-        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, int pageSize, int currentPage, string SortBy);
-        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, int cat, int pageSize, int currentPage, string SortBy);
+        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, string country, int location, int pageSize, int currentPage, string SortBy, double minPrice, double maxPrice);
+        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, List<int> category, string country, int location, int pageSize, int currentPage, string SortBy, double minPrice, double maxPrice);
+        IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, int category, string keywords, string country, int location, int pageSize, int currentPage, string OrderExpr, double minPrice, double maxPrice);
+
         AdvModel Get(int id);
+
+        IEnumerable<AdvModel> GetSimilar(AdvModel sample);
+
+        CarAdvModel GetCar(int id);
         void Save(AdvModel adv);
         void AddMessage(SiteMessage model);
         RegisterModel GetUser(int currentUserId);
@@ -21,6 +27,9 @@ namespace DAL
         void Delete(int id);
         void IncreaseViewCount(int toInt32, int viewCount);
         void SaveSearch(int currentUserId, string keywords, string location);
+
+
+        void SaveCar(CarAdvModel model);
     }
 
     [Table("UserProfile")]
@@ -89,6 +98,8 @@ namespace DAL
         public string LastName { get; set; }
         [Required]
         public string FirstName { get; set; }
+
+        public DateTime Created { get; set; }
 
     }
 }

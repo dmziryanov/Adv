@@ -25,8 +25,8 @@ namespace AdvSpareAuto.Controllers
             return Json(_categoryRepository.GetAll(), JsonRequestBehavior.AllowGet);
         }
 
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = 60)]
-        public ActionResult Search(string keywords, string location)
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, VaryByParam = "category", Duration = 60)]
+        public ActionResult Search(string keywords, string location, string category)
         {
             //В этом методе только заполняется модель и берется первое объявление, основной список заполняется асинхронно в  CategoryController
             _advRepository.SaveSearch(WebSecurity.CurrentUserId, keywords, location);
@@ -51,10 +51,20 @@ namespace AdvSpareAuto.Controllers
                     }
                 }
             }
-            
-                
 
+            int j = 0;
+            if (int.TryParse(category, out j))
+            {
+
+                adv.Category = adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault().ID;
+                ViewBag.Message = "Купить " + adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault().Name;
+            }
             return View(adv);
+        }
+
+        public ActionResult Advanced()
+        {
+            return View();
         }
     }
 }

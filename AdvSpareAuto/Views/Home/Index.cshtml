@@ -64,6 +64,32 @@
 
             </div>
 
+            <div class="inner-box relative">
+                <h2 class="title-2">
+                    ПРОДВИГАЕМЫЕ ОБЪЯВЛЕНИЯ
+                    <a id="nextItem" class="link pull-right carousel-nav"> <i class="icon-right-open-big"></i></a>
+                    <a id="prevItem" class="link pull-right carousel-nav"> <i class="icon-left-open-big"></i> </a>
+                </h2>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="no-margin item-carousel owl-carousel owl-theme">
+                            @foreach (var item in Model._featuredList)
+                            {
+                                <div class="item">
+                                    <a href="@item.adsurl">
+                                        <span class="item-carousel-thumb">
+                                            <img class="img-responsive" src="@item.firstphoto" alt="img">
+                                        </span>
+                                        <span class="item-name">@item.Name</span>
+                                        <span class="price">@item.PriceLabel</span>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
             <div class="inner-box category-content">
@@ -92,7 +118,7 @@
                                     var item = Model._categories.ElementAt(j);
                                     <div class="cat-list">
                                         <h3 class="cat-title">
-                                            <a href="/Category/Search?parentcategory=@item.ID"><i class="fa @item.IconName ln-shadow"></i>@item.Name@*<span class="count">277,959</span>*@ </a>
+                                            <a href="/Category/Search?parentcategory=@item.ID"><i class="fa @item.IconName ln-shadow"></i>@item.Name<span class="count">@item.Count</span> </a>
                                             <span data-target=".cat-id-1" data-toggle="collapse" class="btn-cat-collapsed collapsed"><span class=" icon-down-open-big"></span></span>
                                         </h3>
                                         <ul class="cat-collapse collapse in cat-id-1">
@@ -182,7 +208,7 @@
 
             </div>
 
-            <div class="inner-box relative lifted">
+         @*  гугл <div class="inner-box relative lifted">
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <!-- adv large long box -->
                 <ins class="adsbygoogle"
@@ -194,7 +220,7 @@
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
 
-            </div>
+            </div>*@
 
 
 
@@ -218,7 +244,7 @@
                             <ul class="cat-list arrow">
                                 @foreach (var subitem in Model.Popular.OrderByDescending(x => x.Count).ToList())
                                 {
-                                    <li> <a href="/Category/Search?Id=@subitem.ID">@subitem.Name (@subitem.Count) </a></li>
+                                    <li> <a href="/Category/Search?category=@subitem.ID">@subitem.Name (@subitem.Count) </a></li>
                                 }
                             </ul>
                         </div>
@@ -331,16 +357,29 @@
     </div>
     <!-- /.page-info -->
 
-    <div class="page-bottom-info">
-        <div class="page-bottom-info-inner">
+<div class="page-bottom-info">
+    <div class="page-bottom-info-inner">
 
-            <div class="page-bottom-info-content text-center">
-                <h1>Если у вас есть вопросы, комментарии или пожелания, позвоните +7 (926) 739-07-03</h1>
-                <a class="btn  btn-lg btn-primary-dark" href="tel:+7 (926) 739-07-03">
-                    <i class="icon-mobile"></i> <span class="hide-xs color50">Позвонить:</span> +7 (926) 739-07-03
-                </a>
-            </div>
-
+        <div class="page-bottom-info-content text-center">
+            <h1>Если у вас есть вопросы, комментарии или пожелания, позвоните +7 (926) 739-07-03</h1>
+            <a class="btn  btn-lg btn-primary-dark" href="tel:+7 (926) 739-07-03">
+                <i class="icon-mobile"></i> <span class="hide-xs color50">Позвонить:</span> +7 (926) 739-07-03
+            </a>
         </div>
+
     </div>
 </div>
+    <div class="text-center">
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- adv large long box -->
+        <ins class="adsbygoogle"
+             style="display: block"
+             data-ad-client="ca-pub-9707096941681181"
+             data-ad-slot="8754484356"
+             data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+
+    </div>
+    </div>

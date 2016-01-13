@@ -24,7 +24,7 @@ namespace AdvSpareAuto.Controllers
             _blogRepository = blogRepository;
         }
 
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = 60)]
+       // [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = 60)]
         public ActionResult Index()
         {
             ViewBag.Message = "Объявления, блоги, отзывы, подать объявление, создать блог, оставить отзыв";
@@ -34,15 +34,21 @@ namespace AdvSpareAuto.Controllers
             return View(adv);
         }
 
+        public ActionResult AdsSale()
+        {
+            ViewBag.Message = "Купить баннер, перетяжка, брендинг";
+            return View();
+        }
+
         public ActionResult About()
         {
-            ViewBag.Message = "Your app description page.";
+            ViewBag.Message = "О нас";
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Контактная информация";
             return View();
         }
 

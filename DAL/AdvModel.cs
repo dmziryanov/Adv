@@ -1,9 +1,24 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using RmsAuto.TechDoc.Entities.TecdocBase;
 
 namespace DAL
 {
+    public class CarAdvModel : AdvModel
+    {
+        public int MileAge { get; set; }
+        public int customs { get; set; }
+        public bool guarantee { get; set; }
+        public string PTS { get; set; }
+        public string VIN { get; set; }
+        public int Year { get; set; }
+        public int Brand { get; set; }
+        public int CarModel { get; set; }
+        public int CarType { get; set; }
+    }
+
     public class AdvModel : BaseModel
     {
 
@@ -12,9 +27,15 @@ namespace DAL
             this.Imgs = new List<ImageFile>();
         }
 
+        public long CurrentSearchPageCount { get; set; }
         public RegisterModel CurrentUser;
-
+        public int _next;
+        public int _previous;
+        public AdvModel next;
+        public AdvModel previous;
         public AdvModel[] _featuredList;
+        public Brand[] _BrandItems;
+        public Manufacturer[] _manufacturers;
 
         public string topAdsVisible
         {
@@ -37,8 +58,10 @@ namespace DAL
         public int Id { get; set; }
         public string Name { get; set; }
         public string LastColumn = "last-column";
+        public IEnumerable<AdvModel> _simalarList;
 
         public string Description { get; set; }
+        public string Currency { get; set; }
         public string AdvTypeShortName
         {
             get { return Convert.ToString(type.GetDescription()[0]); }
@@ -59,9 +82,12 @@ namespace DAL
             {
                 return
 
-                    String.Format("{0:0,0,0}", Price) + " РУБ.";
+                    String.Format("{0:0,0,0} {1}", Price, Currency);
             }
         }
+
+        public int Country { get; set; }
+
         public int Location { get; set; }
         public string LocationName { get; set; }
         public int IsFeatured { get; set; }
@@ -81,6 +107,7 @@ namespace DAL
         
         [Range(10, 1000, ErrorMessage = "Заполните категорию")]
         public int Category { get; set; }
+        public int SubCategory { get; set; }
         public string adsurl
         {
             get { return "/Adv/AdvDetails/" + Id; }

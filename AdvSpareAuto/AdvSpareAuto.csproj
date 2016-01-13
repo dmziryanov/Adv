@@ -196,6 +196,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdvController.cs" />
     <Compile Include="Controllers\BlogController.cs" />
+    <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PhotoController.cs" />
@@ -522,6 +523,7 @@
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Images\OperaBanner.png" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
@@ -572,7 +574,9 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Adv\PostAdv.cshtml" />
     <Content Include="Views\Category\SearchResults.cshtml" />
     <Content Include="Views\Category\Search.cshtml" />
@@ -598,6 +602,15 @@
     <Content Include="Views\Adv\Edit.cshtml" />
     <Content Include="Views\Adv\Delete.cshtml" />
     <Content Include="Views\Adv\Error.cshtml" />
+    <Content Include="Views\Home\AdsSale.cshtml" />
+    <Content Include="Views\Car\Index.cshtml" />
+    <Content Include="Views\Car\Model.cshtml" />
+    <Content Include="Views\Car\Brand.cshtml" />
+    <Content Include="Views\Adv\PostCarAdv.cshtml" />
+    <Content Include="Views\Car\CarType.cshtml" />
+    <Content Include="Views\Car\CarDescription.cshtml" />
+    <Content Include="Views\Shared\CurrencyControl.cshtml" />
+    <Content Include="Views\Category\Advanced.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -609,6 +622,14 @@
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{6b11160f-17b9-4d7b-b1cc-f6cc7e443f47}</Project>
       <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RmsAuto.Common\RmsAuto.Common.csproj">
+      <Project>{7a551067-3165-433e-bdd0-f798eeee3930}</Project>
+      <Name>RmsAuto.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RmsAuto.TechDoc\RmsAuto.TechDoc.csproj">
+      <Project>{88624d18-f3f9-453f-9983-e6f34af03e18}</Project>
+      <Name>RmsAuto.TechDoc</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

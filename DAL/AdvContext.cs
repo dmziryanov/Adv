@@ -12,6 +12,7 @@ namespace DAL
         }
 
         public DbSet<Adv> advs { get; set; }
+        public DbSet<CarAdv> caradvs { get; set; }
         public DbSet<AdvPhoto> AdvPhotos { get; set; }
         public DbSet<ImageFile> ImageFiles { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -29,6 +30,20 @@ namespace DAL
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            
+        modelBuilder.Entity<Adv>().Map(m =>
+        {
+            //m.MapInheritedProperties();
+            m.ToTable("Adv");
+        });
+
+        modelBuilder.Entity<CarAdv>().Map(m =>
+        {
+            //m.MapInheritedProperties();
+            m.ToTable("CarAdv");
+        });            
+    
         }
     }
 

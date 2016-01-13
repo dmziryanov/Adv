@@ -8,6 +8,8 @@ using System.Web.Caching;
 using System.Web.Mvc;
 using AdvSpareAuto.Models;
 using DAL;
+using RmsAuto.TechDoc;
+using RmsAuto.TechDoc.Entities.TecdocBase;
 using WebMatrix.WebData;
 using CacheItemPriority = System.Web.Caching.CacheItemPriority;
 
@@ -49,7 +51,9 @@ namespace AdvSpareAuto.Controllers
     {
 
         private IAdvRepository _advRepository;
-        private int pageSize = 10;
+        private int pageSize = 12;
+        private int _carCategory = 49;
+        private int _maxPageCount = 15;
 
         public AdvController(IAdvRepository advRepository)
         {
@@ -59,8 +63,25 @@ namespace AdvSpareAuto.Controllers
         [HttpGet]
         public ActionResult PostAdv()
         {
+            ViewBag.Message = "разместить объявление о продаже; подать объявление; Москва, Санкт-Петербург, Екатеринбург, Краснодар, Новосибирск";
             var model = _advRepository.Get(0);
             model.CurrentUser = _advRepository.GetUser(WebSecurity.CurrentUserId);
+            model._manufacturers = Facade.ListManufacturers().ToArray();
+
+
+
+            if (model.CurrentUser == null)
+                model.CurrentUser = new RegisterModel();
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult PostCarAdv()
+        {
+            ViewBag.Message = "разместить объявление о продаже; подать объявление; Москва, Санкт-Петербург, Екатеринбург, Краснодар, Новосибирск";
+            var model = _advRepository.Get(0);
+            model.CurrentUser = _advRepository.GetUser(WebSecurity.CurrentUserId);
+            model._manufacturers = Facade.ListManufacturers().ToArray();
 
             if (model.CurrentUser == null)
                 model.CurrentUser = new RegisterModel();
@@ -108,7 +129,7 @@ namespace AdvSpareAuto.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateAdv(AdvModel model)
+        public ActionResult CreateAdv(CarAdvModel model)
         {
             if (model.Category == 0) return View("Error", new ErrorInfo() { message = "Заполните категорию" });
 
@@ -136,14 +157,67 @@ namespace AdvSpareAuto.Controllers
             return View("Success");
         }
 
+
+        [HttpPost]
+        public void Report(int page, string couse, string text)
+        {
+            using (var a = new AdvContext())
+            {
+                a.Database.ExecuteSqlCommand("insert into ReportAbuse (AdvId, couse, text) values ({0}, {1}, {2})", page, couse, text);
+            }
+        }
+
+
+        [HttpPost]
+        public void SiteMessage(int page, int userId, string phone, string mail, string text)
+        {
+            using (var a = new AdvContext())
+            {
+                a.Database.ExecuteSqlCommand("insert into Sitemessage (AdvId,FromId,  FromPhone, FromEmail, Text) values ({0}, {1}, {2}, [3], {4})", page, userId, phone, mail, text);
+            }
+        }
+
+
+
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = 60)]
         public ActionResult AdvDetails([BindParameter("id")] string AdvNo)
         {
             var adv = _advRepository.Get(Convert.ToInt32(AdvNo));
+            var l = (List<AdvModel>)Session["LastSearch"];
+
+            if (l != null)
+            {
+                if (l.Any(x => x.Id == adv.Id))
+                {
+                    adv._next = l.Where(x => x.Id == adv.Id).FirstOrDefault()._next;
+                    adv._previous = l.Where(x => x.Id == adv.Id).FirstOrDefault()._previous;
+                    if (adv._next > 0)
+                        adv.next = _advRepository.Get(adv._next);
+                    if (adv._previous > 0)
+                        adv.previous = _advRepository.Get(adv._previous);
+                }
+            }
+
+            if (adv.SubCategory == _carCategory)
+            {
+                var tmp = _advRepository.GetCar(Convert.ToInt32(AdvNo));
+
+                if (tmp != null)
+                {
+                    tmp._featuredList = adv._featuredList;
+                    tmp._simalarList = adv._simalarList;
+                    adv = tmp;
+                }
+            }
+
+
+
+            adv.CurrentUser = _advRepository.GetUser(adv.SellerId.HasValue ? adv.SellerId.Value : 0);
             _advRepository.IncreaseViewCount(Convert.ToInt32(AdvNo), adv.ViewCount);
             ViewBag.Message = string.Format("Купить {0} в {1}", adv.Name, adv.LocationName);
             return View(adv);
         }
+
 
 
         public ActionResult MyAdv()
@@ -174,18 +248,30 @@ namespace AdvSpareAuto.Controllers
         }
 
         [HttpGet, ActionName("GetData")]
-        public JsonResult GetData(String sortBy, string keywords, int currentPage, int location, string country, string category, string minPrice, string maxPrice, string type, int condition)
+        public JsonResult GetData(String sortBy, string keywords, int currentPage, int location, string country, string category, string sminPrice, string smaxPrice, string type, int condition)
         {
 
             // GetBooksRequestParams(out SortBy sortBy, out string keywords, out int currentPage);
 
-            var res = (IEnumerable<AdvModel>)HttpRuntime.Cache.Get(sortBy + keywords + location + country + category + minPrice + maxPrice + type + condition);
+            var res = (List<AdvModel>)HttpRuntime.Cache.Get(sortBy + keywords + location + country + category + sminPrice + smaxPrice + type + condition + "&&" + currentPage + "&&" + pageSize);
 
-            return Json(res.ToList().Skip(pageSize * (currentPage - 1)).Take(pageSize), JsonRequestBehavior.AllowGet);
+            return Json(res.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public void Share(int page)
+        {
+
+            // GetBooksRequestParams(out SortBy sortBy, out string keywords, out int currentPage);
+
+            using (var a = new AdvContext())
+            {
+                a.Database.ExecuteSqlCommand("insert into SocialAdvShare (AdvId) values ({0})", page);
+            }
+
         }
 
         [HttpGet, ActionName("GetPagesData")]
-        public JsonResult GetPagesData(String sortBy, string keywords, int currentPage, int location, string country, string category, string minPrice, string maxPrice, string type, int condition)
+        public JsonResult GetPagesData(String sortBy, string keywords, int currentPage, int location, string country, string category, string sminPrice, string smaxPrice, string type, int condition)
         {
             AdvModel adv;
             adv = _advRepository.Get(Convert.ToInt32(0));
@@ -207,42 +293,137 @@ namespace AdvSpareAuto.Controllers
                 OrderExpr = "Order by Price asc";
 
             if (sortBy.Contains("сначала новые"))
-                OrderExpr = "Order by created asc";
-
-            if (sortBy.Contains("сначала старые"))
                 OrderExpr = "Order by created desc";
 
-            IEnumerable<AdvModel> result = new List<AdvModel>();
+            if (sortBy.Contains("сначала старые"))
+                OrderExpr = "Order by created asc";
 
-            result = _advRepository.GetFilteredSortedPageResult(atype, (AdvCondition)condition, keywords, pageSize, currentPage, OrderExpr).ToList();
-            if (result.Count() == 0)
+            List<AdvModel> result = new List<AdvModel>();
+            
+            double minPrice = 0;
+            double maxPrice = 0;
+
+            double.TryParse(sminPrice, out minPrice);
+            double.TryParse(smaxPrice, out maxPrice);
+
+
+            int i = 0;
+            if (int.TryParse(category, out i) && i > 0)
             {
-
-                 
-                var cat_id = adv._subCategories.Where(x => x.Name.ToUpper().Contains(keywords.ToUpper())).FirstOrDefault(); // Засплитить и поискать по всем словам
-
-                if (cat_id != null)
-                    result = _advRepository.GetFilteredSortedPageResult(atype, (AdvCondition)condition, cat_id.Category_Id, pageSize, currentPage, OrderExpr).ToList();
+                result =
+                    _advRepository.GetFilteredSortedPageResult(atype, (AdvCondition)condition, i, keywords, country, location, pageSize, currentPage, OrderExpr, minPrice, maxPrice).ToList();
             }
+            else
+            {
+                result =
+                    _advRepository.GetFilteredSortedPageResult(atype, (AdvCondition)condition, keywords, country, location, pageSize, currentPage, OrderExpr, minPrice, maxPrice).ToList();
+
+                if (result.Count() == 0)
+                {
+                    List<int> cat_id = null;
+                    if (!string.IsNullOrEmpty(keywords))
+                        //Если ничего не нашли в заголовке то ищем по категориям
+                        cat_id = adv._subCategories.Where(x => x.Name.ToUpper().Contains(keywords.ToUpper())).Select(x=> x.ID).ToList(); // Засплитить и поискать по всем словам
+
+
+
+                    result = _advRepository.GetFilteredSortedPageResult(atype, (AdvCondition)condition, cat_id, country, location, pageSize, currentPage, OrderExpr, minPrice, maxPrice).ToList();
+                    
+                }
+            }
+
+            //Очень важно, этот запрос выполняется для всех!
             Array.ForEach(result.ToArray(), model =>
             {
                 using (var _advContext = new AdvContext())
                 {
                     model.ImgIds =
-                        _advContext.Database.SqlQuery<int>("select PhotoId from dbo.advPhoto where AdvId ={0}", model.Id)
+                        _advContext.Database.SqlQuery<int>("select PhotoId from dbo.advPhoto where AdvId ={0}",
+                            model.Id)
                             .ToArray();
                 }
 
                 model.LocationName = adv._locations.FirstOrDefault(x => x.CityId == model.Location).Name;
                 model.CategoryName = adv._subCategories.FirstOrDefault(x => x.ID == model.Category).Name;
             });
-            HttpRuntime.Cache.Add(sortBy + keywords + location + country + category + minPrice + maxPrice + type + condition, result, null, DateTime.Now + TimeSpan.FromMinutes(1), TimeSpan.Zero, CacheItemPriority.High, null);
-            return Json(Enumerable.Range(0, result.Count() / pageSize + 1).ToList().Select(x => new { pagenum = x + 1 }), JsonRequestBehavior.AllowGet);
+
+            List<AdvModel> tmp = new List<AdvModel>();
+            tmp = tmp.Concat(result.ToList()).ToList();
+            for (var k = 0; k < result.Count() - 1; k++)
+            {
+                if (k > 0)
+                    tmp[k]._previous = tmp[k - 1].Id;
+                
+                tmp[k]._next = tmp[k + 1].Id;
+            }
+
+            Session["LastSearch"] = tmp;
+            HttpRuntime.Cache.Add(sortBy + keywords + location + country + category + sminPrice + smaxPrice + type + condition + "&&" + currentPage + "&&" + pageSize, result, null, DateTime.Now + TimeSpan.FromMinutes(1), TimeSpan.Zero, CacheItemPriority.High, null);
+            
+            var count = result.Count > 0 ? result.FirstOrDefault().CurrentSearchPageCount : 0;
+            
+            var pagecount = (int) (count % pageSize == 0 ? count / pageSize : count / pageSize + 1);
+            
+            //Limit max pages
+            pagecount = pagecount < _maxPageCount ? pagecount : _maxPageCount;
+            return Json(Enumerable.Range(0, pagecount).ToList().Select(x => new { pagenum = x + 1 }), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SaveAdv(int id)
         {
             throw new NotImplementedException();
         }
+
+        public void AddToFavotites(int id)
+        {
+            var list = (List<int>) Session["favorites"];
+            if (list != null)
+            {
+                list.Add(id);
+            }
+            else
+            {
+                Session["favorites"] = new List<int>();
+            }
+            if (WebSecurity.CurrentUserId > -1)
+            {
+                //ToDO: сделать сохранение в базу
+            }
+        }
+
+        public ActionResult CreateCarAdv(CarAdvModel model)
+        {
+            model.Category = _carCategory;
+
+            foreach (var fileKey in Request.Files.AllKeys)
+            {
+                var file = Request.Files[fileKey];
+                try
+                {
+                    if (file != null && file.InputStream.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var b = new byte[file.InputStream.Length];
+                        file.InputStream.Read(b, 0, (int)file.InputStream.Length);
+
+                        model.Imgs.Add(new ImageFile() { FileBody = b, FileName = file.FileName, FileSize = b.Length, Created = DateTime.Now });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { Message = "Error in saving file" });
+                }
+            }
+            var mfg = Facade.GetManufacturer(model.Brand, true, new List<int>());
+            var i = Facade.GetModelById(model.CarModel, true, new List<int>());
+            var m = Facade.GetModification(model.CarModel, true, new List<int>());
+            model.Name = mfg + " " + i + " " + m.FullName.Tex_Text;
+
+            _advRepository.SaveCar(model);
+
+            return View("Success");
+        }
     }
+
+
 }

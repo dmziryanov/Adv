@@ -20,10 +20,10 @@ namespace DAL
         {
             using (_advContext = new AdvContext())
             {
-                var res =_advContext.Database.SqlQuery<byte[]>("Select FileBody From dbo.ImageFile where FileId = {0}", id).FirstOrDefault();
+                var res =_advContext.Database.SqlQuery<ImageFile>("Select * From dbo.ImageFile where FileId = {0}", id).FirstOrDefault();
                 //var img = System.Drawing.Image.FromStream(new MemoryStream(res));
                 
-                return res;
+                return res.FileBody;
             }
         }
 

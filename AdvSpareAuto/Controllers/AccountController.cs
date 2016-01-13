@@ -43,7 +43,7 @@ namespace AdvSpareAuto.Controllers
         {
             if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
-                return RedirectToLocal(returnUrl);
+                return RedirectToAction("PrivateOffice", "Home");
             }
 
             // If we got this far, something failed, redisplay form

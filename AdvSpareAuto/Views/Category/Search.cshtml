@@ -22,9 +22,11 @@
         GetServerData(defaultPageNum);
     }
 
+    $.ajaxSetup({ cache: false });
+
     function refreshPager(pageNum, nextOper) {
         $.ajax({
-            url: String.format("/Adv/GetPagesData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&minPrice={6}&maxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#country span").val(), $("#category span").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs .active").attr("i"), $("#condition").val()),
+            url: String.format("/Adv/GetPagesData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&sminPrice={6}&smaxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#Country option:selected").val(), $("#search-category option:selected").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs li[class='active']").attr("id"), $("#condition option:selected").val()),
             method: 'GET',
             datatype: 'json',
             data: { query: 'test' },
@@ -39,21 +41,33 @@
                 $(".pageItem:eq(" + pageNum + ")").addClass("selectedItem");
 
             }
-        }).success(function () {
-            $('.pager-btn').each(function(index, el) {
-                
+        }).fail(function () { alert('Ошибка получения данных, попробуйте еще раз') }).success(function () {
+            count = 0;
+            $('.pager-btn').each(function (index, el) {
+
                 if (el.innerHTML == pageNum) {
                     $(el.parentNode).addClass("active");
+                    count++;
                 }
             });
+            if (count == 0) {
+                $('#NotFound').show();
+            } else {
+                $('#NotFound').hide();
+                
+            }
+
+            if (count = 15) {
+                $('#MaxPageWarning').hide();
+            } else {
+                $('#MaxPageWarning').show();
+            }
             nextOper(currentPage);
         });
-
-
     }
 
     function refreshBooks(pageNum) {
-        $.getJSON(String.format("/Adv/GetData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&minPrice={6}&maxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#country span").val(), $("#category span").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs .active").attr("i"), $("#condition").val()),
+        $.getJSON(String.format("/Adv/GetData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&sminPrice={6}&smaxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#Country option:selected").val(), $("#search-category option:selected").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs li[class='active']").attr("id"), $("#condition option:selected").val()),
             function (booksdata) {
                 booksdata.forEach(function (el) {
                     el.Delete = function () {
@@ -94,6 +108,10 @@
             LoadData();
         });
 
+        $('#smallSearchBtn').click(function () {
+            LoadData();
+        });
+
         $(document).ready(function () {
             filterCountry = function (id) {
                 $('#id-location option').attr('style', 'visibility:hidden; display:none;');
@@ -107,6 +125,20 @@
 
 @model DAL.AdvModel
 @*<form action="/Category/Search/" method="GET">*@
+<div class="inner-box relative">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- adv large long box -->
+    <ins class="adsbygoogle"
+         style="display: block"
+         data-ad-client="ca-pub-9707096941681181"
+         data-ad-slot="8754484356"
+         data-ad-format="auto"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+</div>
+
 <div class="search-row-wrapper">
     <div class="container ">
         <div class="col-sm-3">
@@ -114,14 +146,16 @@
         </div>
         <div class="col-sm-3">
             <select class="form-control selecter" name="category" id="search-category">
-                <option value="0" selected="selected">Все категории</option>
+
+                <option @if (Model._subCategories.Where(x => x.ID == @Model.Category).FirstOrDefault() == null) { <text> selected="selected" </text>     } value="0">Все категории</option>
+
                 @foreach (var item in Model._categories)
                 {
                     <option value="@item.ID" style="background-color: #E9E9E9; font-weight: bold;" disabled="disabled"> - @item.Name - </option>
 
                     foreach (var subitem in Model._subCategories.Where(x => x.Category_Id == item.ID))
                     {
-                        <option value="@subitem.ID">@subitem.Name</option>
+                        <option @if (@Model.Category == @subitem.ID) { <text> selected="selected" </text>    } value="@subitem.ID">@subitem.Name</option>
                     }
                 }
             </select>
@@ -132,7 +166,7 @@
                 {
                     <option @if (@item.CountryId == 643) { <text>
                             selected="selected"
-                            </text>         } value="@item.CountryId">
+                            </text>            } value="@item.CountryId">
                         @item.CountryName
                     </option>
                 }
@@ -140,14 +174,14 @@
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="location" id="id-location">
-                <option @if (string.IsNullOrEmpty(@Model.LocationName)) { <text> selected="selected" </text>        } value="-1">Все</option>
+                <option @if (string.IsNullOrEmpty(@Model.LocationName)) { <text> selected="selected" </text>           } value="-1">Все</option>
 
                 @foreach (var item in Model._locations.OrderBy(x => x.Name))
                 {
                     <option style="visibility: hidden; display: block;" countryid="@item.countryId"
                             @if (Model.LocationName == item.Name) {  <text>
                             selected="selected"
-                            </text>      } value="@item.CityId">
+                            </text>         } value="@item.CityId">
                         @item.Name
                     </option>
 
@@ -178,7 +212,7 @@
                                 <input type="text" placeholder="3000" name="maxPrice" id="maxPrice" class="form-control">
                             </div>
                             <div class="form-group col-sm-3 no-padding">
-                                <button class="btn btn-default pull-right" type="submit"><i class="fa fa-search"></i></button>
+                                <button id="smallSearchBtn" class="btn btn-primary pull-right" type="submit"><i class="fa fa-search"></i></button>
                             </div>
 
                             <div style="clear:both"></div>
@@ -229,19 +263,19 @@
                         <!--/.list-filter-->
                         <div class="locations-list  list-filter">
                             <h5 class="list-title"><strong><a href="#">Состояние</a></strong></h5>
-                            <label class="radio-inline" for="radios-2">
-                                <input name="condition" id="@Html.IdFor(x => x.condition)" value="0" checked="checked" type="radio">
-                                Все
-                            </label>
-                            <label class="radio-inline" for="radios-0">
-                                <input name="condition" id="@Html.IdFor(x => x.condition)" value="2" type="radio">
-                                Новое
-                            </label>
-                            <label class="radio-inline" for="radios-1">
-                                <input name="condition" id="@Html.IdFor(x => x.condition)" value="1" type="radio">
-                                Б/У
-                            </label>
+                            <select class="form-control selecter" name=" condition" id="@Html.IdFor(x => x.condition)">
+                                <option selected="selected" value="0" selected="selected">
+                                    Все
+                                </option>
 
+                                <option value="2">
+                                    Новое
+                                </option>
+
+                                <option value="1">
+                                    Б/У
+                                </option>
+                            </select>
                         </div>
                         <!--/.list-filter-->
                         <div style="clear: both"></div>
@@ -267,19 +301,7 @@
             </div>
             <!--/.page-side-bar-->
             <div class="col-sm-9 page-content col-thin-left">
-                <div class="inner-box relative">
-                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                    <!-- adv large long box -->
-                    <ins class="adsbygoogle"
-                         style="display: block"
-                         data-ad-client="ca-pub-9707096941681181"
-                         data-ad-slot="8754484356"
-                         data-ad-format="auto"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-
-                </div>
+      
                 <div class="category-list">
                     <div class="tab-box ">
 
@@ -311,17 +333,33 @@
                     <!--/.listing-filter-->
 
                     <div class="adds-wrapper">
+
                         <div class="tab-content">
+
+                            <h3>
+                                <span id="NotFound" class="label label-info">
+
+                                    Пока ничего не найдено, попробуйте изменить условия поиска или добавить свое объявление
+
+                                </span>
+
+
+
+                                <span class="label label-danger" id="MaxPageWarning">
+                                    Слишком много результатов поиска, показаны первые 15
+                                </span>
+                            </h3>
+                            
                             <div data-bind="foreach: Advs" class="tab-pane active" id="allAds">
                                 <div class="item-list">
                                     <div data-bind="attr: { style: topAdsVisible }" class="cornerRibbons topAds">
-                                        <a href="#">Топовые предложения</a>
+                                        <a href="#">Топ-Предложения</a>
                                     </div>
                                     <div data-bind="attr: { style: featuredAdsVisible }" class="cornerRibbons featuredAds">
-                                        <a href="#"> Top Ads</a>
+                                        <a href="#">Продвигаемые</a>
                                     </div>
                                     <div data-bind="attr: { style: urgentAdsVisible }" class="cornerRibbons urgentAds">
-                                        <a href="#"> Top Ads</a>
+                                        <a href="#">Срочно</a>
                                     </div>
                                     <div class="col-sm-2 no-padding photobox">
                                         <div class="add-image">
@@ -334,14 +372,14 @@
                                         <div class="add-details">
                                             <h5 class="add-title">
                                                 <a data-bind="attr: { href: adsurl }">
-                                                    <span data-bind="text: Name">Brand New Samsung Phones</span>
+                                                    <span data-bind="text: Name"></span>
                                                 </a>
                                             </h5>
                                             <span class="info-row">
                                                 <span data-bind="attr: { title: AdvTypeFullName }" class=" add-type business-ads tooltiphere" data-toggle="tooltip" data-placement="right" title="Бизнес"><span data-bind="text: AdvTypeShortName"></span></span>
                                                 <span data-bind="text: CreatedText" class="date"><i class=" icon-clock"> </i>Today 1:21 pm</span> -
-                                                <span data-bind="text: CategoryName" class="category">Electronics</span> -
-                                                <span data-bind="text: LocationName" class="item-location"><i class="fa fa-map-marker"></i> London </span>
+                                                <span data-bind="text: CategoryName" class="category"></span> -
+                                                <span data-bind="text: LocationName" class="item-location"><i class="fa fa-map-marker"></i> </span>
                                             </span>
                                         </div>
                                         <div class="info-row"></div>
@@ -350,7 +388,7 @@
                                     <div class="col-sm-3 text-right  price-box">
                                         <h2 data-bind="text: PriceLabel" class="item-price"> 999 </h2>
                                         @*<a class="btn btn-danger  btn-sm make-favorite"> <i class="fa fa-certificate"></i> <span>Top Ads</span> </a> *@
-                                        <a class="btn btn-default  btn-sm make-favorite">
+                                        <a class="btn btn-danger  btn-sm make-favorite">
                                             <i class="fa fa-heart"></i><span>Сохранить</span>
                                         </a>
                                     </div>
@@ -401,7 +439,7 @@
 
                 <div style="clear: both; padding: 5px"></div>
 
-                <div class="inner-box relative">
+                <div id="GoogleBlockId" class="inner-box relative">
                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <!-- adv large long box -->
                     <ins class="adsbygoogle"
