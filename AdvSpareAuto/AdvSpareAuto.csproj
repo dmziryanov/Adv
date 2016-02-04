@@ -490,6 +490,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Error500.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -611,9 +612,18 @@
     <Content Include="Views\Car\CarDescription.cshtml" />
     <Content Include="Views\Shared\CurrencyControl.cshtml" />
     <Content Include="Views\Category\Advanced.cshtml" />
+    <Content Include="Views\Adv\AddToFavotites.cshtml" />
+    <Content Include="Views\Adv\Favorite.cshtml" />
+    <Content Include="Views\Home\PlaceBanner.cshtml" />
+    <Content Include="Views\Home\TerminateAccount.cshtml" />
+    <Content Include="Views\Home\Success.cshtml" />
+    <Content Include="Views\Category\ReserveGoogleAdvView.cshtml" />
+    <Content Include="Views\Adv\LeftPage.cshtml" />
+    <Content Include="Views\Home\SavedSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\FAQ\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

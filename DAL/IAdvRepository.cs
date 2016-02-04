@@ -8,13 +8,16 @@ namespace DAL
 {
     public interface IAdvRepository
     {
-        IEnumerable<AdvModel> GetAll();
+        List<RegisterModel> ToList();
+        IEnumerable<CarAdv> GetAll();
 
         IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, string country, int location, int pageSize, int currentPage, string SortBy, double minPrice, double maxPrice);
         IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, List<int> category, string country, int location, int pageSize, int currentPage, string SortBy, double minPrice, double maxPrice);
         IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, int category, string keywords, string country, int location, int pageSize, int currentPage, string OrderExpr, double minPrice, double maxPrice);
 
         AdvModel Get(int id);
+
+        IEnumerable<AdvModel> Get(int[] id);
 
         IEnumerable<AdvModel> GetSimilar(AdvModel sample);
 
@@ -30,6 +33,22 @@ namespace DAL
 
 
         void SaveCar(CarAdvModel model);
+        void SaveBlogImage(int id, int photoId);
+        int[] GetPhotoIds(int id);
+        int[] GetFileIds(int id);
+
+        string[] GetFileNames(int id);
+        void SaveBlogFile(int id, int photoId);
+        int GetAdvCountByUserId(int userId);
+        int GetFavoriteCountByUserId(int userId);
+        int GetViewCountByUserId(int userId);
+        void UpdateLoginDate(string userId);
+
+        DateTime GetLoginDate(string userId);
+        void CloseAccount(int currentUserId, int inlineRadioOptions);
+        HashSet<int> GetFavorite(string serverVariable);
+        void AddFavorite(string serverVariable, int i);
+        void Remove(string serverVariable, int id);
     }
 
     [Table("UserProfile")]
@@ -60,6 +79,7 @@ namespace DAL
         public string FirstName { get; set; }
 
         public int UserType { get; set; }
+        public int UserAvatarId { get; set; }
     }
 
     public class RegisterModel
@@ -100,6 +120,7 @@ namespace DAL
         public string FirstName { get; set; }
 
         public DateTime Created { get; set; }
-
+        public string Address { get; set; }
+        public int UserAvatarId { get; set; }
     }
 }

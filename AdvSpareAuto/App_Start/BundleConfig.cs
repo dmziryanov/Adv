@@ -57,6 +57,7 @@ namespace AdvSpareAuto
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/assets/css/bootstrap.css",
                 "~/assets/css/style.css",
+                "~/assets/css/animation.css",
                 "~/assets/css/owl.carousel.css",
                 "~/assets/css/owl.theme.css",
                 "~/assets/css/fileinput.css",

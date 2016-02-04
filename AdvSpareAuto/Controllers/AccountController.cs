@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Transactions;
 using System.Web;
@@ -19,10 +20,12 @@ namespace AdvSpareAuto.Controllers
     public class AccountController : Controller
     {
         private IAdvRepository _advRepository;
+        private IImageRepository _imageRepository;
 
-        public AccountController(IAdvRepository advRepository)
+        public AccountController(IAdvRepository advRepository, IImageRepository imageRepository)
         {
             _advRepository = advRepository;
+            _imageRepository = imageRepository;
         }
 
 
@@ -43,6 +46,9 @@ namespace AdvSpareAuto.Controllers
         {
             if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
+                Session["GetLoginDate"] = _advRepository.GetLoginDate(model.UserName);
+                _advRepository.UpdateLoginDate(model.UserName);
+                
                 return RedirectToAction("PrivateOffice", "Home");
             }
 
@@ -51,12 +57,14 @@ namespace AdvSpareAuto.Controllers
             return View(model);
         }
 
+       
         //
         // POST: /Account/LogOff
 
         
         public ActionResult LogOff()
         {
+            
             WebSecurity.Logout();
 
             return RedirectToAction("Index", "Home");
@@ -99,7 +107,7 @@ namespace AdvSpareAuto.Controllers
                         Phone = model.Phone,
                         UserType = model.UserType
                     });
-                    
+                    AdvRepository._users = _advRepository.ToList();
                     return RedirectToAction("Index", "Home");
                 }
                 catch (MembershipCreateUserException e)

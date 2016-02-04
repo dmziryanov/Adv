@@ -29,9 +29,6 @@ namespace AdvSpareAuto.Controllers
 
         public void Index(int id)
         {
-            byte[] imageData = _imageRepository.Get(id);
-            if (imageData == null) return;
-
             int fileID = id;
             string thumbnailGeneratorKey = "largephoto";
 
@@ -47,7 +44,7 @@ namespace AdvSpareAuto.Controllers
                 Response.ContentType = thumbnail.ContentType;
                 Response.Cache.SetCacheability(HttpCacheability.ServerAndPrivate);
                 Response.Cache.SetETag(etag);
-                
+
                 if (Request.Headers["If-None-Match"] != etag)
                 {
                     Response.WriteFile(thumbnail.FilePath);
@@ -57,8 +54,19 @@ namespace AdvSpareAuto.Controllers
                     Response.StatusCode = (int)HttpStatusCode.NotModified;
                 }
             }
-
         }
+
+        public void File(int id)
+        {
+            var imageData = _imageRepository.GetFileName(id);
+            if (imageData == null) return;
+
+            Response.ContentType = "application/octet-stream";
+            Response.Cache.SetCacheability(HttpCacheability.ServerAndPrivate);
+            Response.AddHeader("content-disposition", @"attachment;filename='"+imageData.FileName+"'");
+            Response.BinaryWrite(imageData.FileBody);
+        }
+
 
         public void Thumb(int id)
         {
@@ -68,7 +76,7 @@ namespace AdvSpareAuto.Controllers
 
             int fileID = id;
             string thumbnailGeneratorKey = "photo";
-        
+
 
 
             ThumbnailInfo thumbnail = ThumbnailGenerator.GetThumbnail(fileID, thumbnailGeneratorKey);
@@ -99,12 +107,12 @@ namespace AdvSpareAuto.Controllers
         private ActionResult FileResult(Image objImage)
         {
             Stream ms = new MemoryStream();
-            
-                objImage.Save(ms, ImageFormat.Jpeg);
-             
 
-                return File(ms, "image/jpeg");
-            
+            objImage.Save(ms, ImageFormat.Jpeg);
+
+
+            return File(ms, "image/jpeg");
+
         }
 
         /*       private Bitmap WaterMark(Bitmap image) {
@@ -157,10 +165,10 @@ namespace AdvSpareAuto.Controllers
 
         public Image Crop(Image image, int width, int height)
         {
-            var destRect = new Rectangle(0, 0, width, height-30);
-            var destImage = new Bitmap(width, height-30);
+            var destRect = new Rectangle(0, 0, width, height - 30);
+            var destImage = new Bitmap(width, height - 30);
 
-            
+
             using (var graphics = Graphics.FromImage(destImage))
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
@@ -177,7 +185,7 @@ namespace AdvSpareAuto.Controllers
                 }
             }
 
-            
+
         }
 
         public void ReleaseContext()

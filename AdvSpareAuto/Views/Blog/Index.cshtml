@@ -12,15 +12,11 @@
                 <p class="sub animateme fittext3 animated fadeIn">Общайтесь на любых устройствах</p>
                 <div class="btn btn-primary small">  @Html.ActionLink("Создать свой блог", "Create", new { @class = "btn btn-primary btn-search btn-block" })</div>
                 <div class="row search-row animated fadeInUp">
-                    <div class="col-lg-4 col-sm-4 search-col relative locationicon">
-                        <i class="icon-location-2 icon-append"></i>
-                        <input type="text" name="country" id="autocomplete-ajax" class="form-control locinput input-rel searchtag-input has-icon" placeholder="Город..." value="">
-                    </div>
-                    <div class="col-lg-4 col-sm-4 search-col relative">
+                    <div class="col-lg-6 col-sm-4 search-col relative">
                         <i class="icon-docs icon-append"></i>
                         <input type="text" name="ads" id="ads" class="form-control has-icon" placeholder="Название или описание блога" value="">
                     </div>
-                    <div class="col-lg-4 col-sm-4 search-col">
+                    <div class="col-lg-6 col-sm-4 search-col">
                         <button onclick="Search();" class="btn btn-primary btn-search btn-block"><i class="icon-search"></i><strong>Найти блог</strong></button>
                     </div>
                 </div>
@@ -29,37 +25,42 @@
     </div>
 </div>
 
-<p>
-    <h1>
-        Все блоги
-    </h1>
-</p>
-<table>
-    <tr>
-        <th>
-            Название
-        </th>
-        <th>
-            Описание
-        </th>
-        <th></th>
-    </tr>
+<div class="main-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 login-box">
+                <div class="panel panel-default">
+                    <div class="panel-intro text-center">
+                        <p>
+                            <h1>
+                                Блоги в наличии :)
+                            </h1>
+                        </p>
+                        <table class="table-responsive">
+                           
 
-@foreach (var item in Model) {
-    <tr style="background: /Photo/Thumb/@item.ImageId">
-        <td>
-            @Html.ActionLink(item.Name, "BlogDetails","Blog",new { Id = item.Id }, null)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-      @*  
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>*@
-    </tr>
-}
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.ActionLink(item.Name, "BlogDetails", "Blog", new { Id = item.Id }, null)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    @*
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                                            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                                            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                                        </td>*@
+                                </tr>
+                            }
 
-</table>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -31,33 +31,44 @@
     </div>
 </div>
 
-<h1>
-    Последние отзывы
-</h1>
+<div id="wrapper">
+    <div class="main-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 page-content">
+                    <div class="inner-box category-content">
+                        <h1>
+                            Последние отзывы
+                        </h1>
 
-@foreach (var item in Model)
-{
-    <div class="row">
-       
-        <div class="col-md-4 col-sm-4">
-            <div class="panel sidebar-panel">
-                <div class="panel-heading">О ком: @Html.DisplayFor(modelItem => item.AboutName) - @Html.DisplayFor(modelItem => item.Created)</div>
-                <div class="panel-content">
-                    <div class="panel-body text-left">
-                        <ul class="list-check">
-                            <li><i>@Html.DisplayFor(modelItem => item.Text)</i></li>
-                        </ul>
-                        <p>
+                        @foreach (var item in Model)
+                        {
+                            <div class="row">
 
-                            Оставил <b>@Html.DisplayFor(modelItem => item.PersonName)</b>
-                            <a class="pull-right" href="mailto:@item.PersonMail">Связаться с ним...<i class="fa fa-angle-double-right"></i> </a>
-                        </p>
+                                <div class="col-md-4 col-sm-4">
+                                    <div class="panel sidebar-panel">
+                                        <div class="panel-heading">О ком: @Html.DisplayFor(modelItem => item.AboutName) - @Html.DisplayFor(modelItem => item.Created)</div>
+                                        <div class="panel-content">
+                                            <div class="panel-body text-left">
+                                                <ul class="list-check">
+                                                    <li><i>@Html.DisplayFor(modelItem => item.Text)</i></li>
+                                                </ul>
+                                                <p>
+
+                                                    Оставил <b>@Html.DisplayFor(modelItem => item.PersonName)</b>
+                                                    <a class="pull-right" href="mailto:@item.PersonMail">Связаться с ним...<i class="fa fa-angle-double-right"></i> </a>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-}
-
-
+</div>

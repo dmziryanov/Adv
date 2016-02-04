@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Web;
 using RmsAuto.TechDoc.Entities.TecdocBase;
 
 namespace DAL
@@ -51,7 +53,51 @@ namespace DAL
         {
             get { return IsFeatured == 4 ? "visibility:visible" : "visibility:hidden"; }
         }
-        
+
+        public string SaveAdsUrl
+        {
+            get
+            {
+                return
+
+                    "return refreshedSaved(this, " + Id + ");";
+        }
+        }
+
+        public string SavedText
+        {
+
+            get
+            {
+                var list = (HashSet<int>)HttpContext.Current.Session["favorites"];
+                if (list != null)
+                {
+                    if (list.Contains(Id))
+                        return "Удалить сохранение";
+                    else
+                        return "Сохранить";
+                }
+                else
+                    return "Сохранить";
+            }
+        }
+
+        public string SavedAdsClass
+        {
+            get
+            {
+                var list = (HashSet<int>)HttpContext.Current.Session["favorites"];
+                if (list != null)
+                {
+                    if (list.Contains(Id))
+                        return "btn btn-danger btn-sm make-favorite";
+                    else
+                        return "btn btn-default btn-sm make-favorite";
+                }
+                else
+                    return "btn btn-default btn-sm make-favorite";
+            }
+        }
         
         public IEnumerable<CategoryCount> Popular;
         
@@ -80,9 +126,12 @@ namespace DAL
         {
             get
             {
+                NumberFormatInfo nfi = (NumberFormatInfo)
+           CultureInfo.InvariantCulture.NumberFormat.Clone();
+                nfi.NumberGroupSeparator = " ";
                 return
 
-                    String.Format("{0:0,0,0} {1}", Price, Currency);
+                    Price.ToString("N0", nfi) + " " + Currency;
             }
         }
 
@@ -132,5 +181,6 @@ namespace DAL
         public Blog TopBlog { get; set; }
         public int ViewCount { get; set; }
         public string KeyWords { get; set; }
+        public string CountryCode { get; set; }
     }
 }

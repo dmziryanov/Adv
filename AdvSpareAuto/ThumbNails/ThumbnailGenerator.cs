@@ -35,7 +35,7 @@ namespace RmsAuto.Store.Cms.Misc.Thumbnails
             if (!IO.File.Exists(res.FilePath) || res.LastModifiedDate < file.Created)
             {
                 IO.Directory.CreateDirectory(dir);
-                GenerateThumbnail(res.FilePath, file, config);
+                GenerateThumbnail(res.FilePath, CropImage(fileID, thumbnailGeneratorKey), config);
                 res.LastModifiedDate = new IO.FileInfo(res.FilePath).LastWriteTime;
             }
             return res;
@@ -71,6 +71,10 @@ namespace RmsAuto.Store.Cms.Misc.Thumbnails
 
 
         }
+
+  
+
+
 
         private static void Crop(string filePath, ImageFile file, ThumbnailGeneratorConfigItem thumbnailConfig)
         {
@@ -138,9 +142,10 @@ namespace RmsAuto.Store.Cms.Misc.Thumbnails
             }
         }
 
-        private static void GenerateThumbnail(string filePath, ImageFile file, ThumbnailGeneratorConfigItem thumbnailConfig)
+        private static void GenerateThumbnail(string filePath, ThumbnailInfo file, ThumbnailGeneratorConfigItem thumbnailConfig)
         {
-            using (IO.MemoryStream largeImageStream = new IO.MemoryStream(file.FileBody.ToArray()))
+
+            using (IO.MemoryStream largeImageStream = new IO.MemoryStream(IO.File.ReadAllBytes(file.FilePath)))
             using (Image largeImage = Image.FromStream(largeImageStream))
             {
                 double ratio;

@@ -28,11 +28,17 @@ namespace DAL
         public int[] PhotoIds { get; set; }
         public int BlogId { get; set; }
 
+        public int CommentsCount;
+
         public DateTime LastEditDate { get; set; }
         public string Body { get; set; }
         public string Topic { get; set; }
         public int UserId { get; set; }
-        public string UserName { get; set; }
+        public string UserName;
+        public int[] ImgIds { get; set; }
+        public int[] FileIds { get; set; }
+
+        public string[] FileNames { get; set; }
     }
 
     public class BlogPostModel : BlogModel

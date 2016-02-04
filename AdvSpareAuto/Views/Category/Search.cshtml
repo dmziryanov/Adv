@@ -4,6 +4,27 @@
     currentPage = 1;
     maxPages = 1;
     defaultPageNum = 1;
+    var count = 0;
+
+    function refreshedSaved(obj, id) {
+        $.ajax({
+            url: '/Adv/SaveAdv/' + id
+        }).success(function(data) {
+            $(obj).removeClass();
+            if (data == 'True')
+            {
+                $(obj).addClass("btn btn-danger btn-sm make-favorite");
+                $(obj).children().eq(1).html("Удалить сохранение");
+            }
+            else
+            {
+                $(obj).children().eq(1).html("Сохранить");
+                $(obj).addClass("btn btn-default btn-sm make-favorite");
+            }
+
+            SavedBtn();
+        });
+    }
 
     String.format = function () {
         var theString = arguments[0];
@@ -25,6 +46,7 @@
     $.ajaxSetup({ cache: false });
 
     function refreshPager(pageNum, nextOper) {
+        count = 0;
         $.ajax({
             url: String.format("/Adv/GetPagesData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&sminPrice={6}&smaxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#Country option:selected").val(), $("#search-category option:selected").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs li[class='active']").attr("id"), $("#condition option:selected").val()),
             method: 'GET',
@@ -42,25 +64,28 @@
 
             }
         }).fail(function () { alert('Ошибка получения данных, попробуйте еще раз') }).success(function () {
-            count = 0;
+           
             $('.pager-btn').each(function (index, el) {
-
+                count++;
                 if (el.innerHTML == pageNum) {
                     $(el.parentNode).addClass("active");
-                    count++;
+                   
                 }
             });
             if (count == 0) {
                 $('#NotFound').show();
             } else {
                 $('#NotFound').hide();
-                
+
             }
 
-            if (count = 15) {
-                $('#MaxPageWarning').hide();
-            } else {
+            str = "test";
+
+            if (count == 15) {
                 $('#MaxPageWarning').show();
+            } else {
+                $('#MaxPageWarning').hide();
+                
             }
             nextOper(currentPage);
         });
@@ -69,15 +94,26 @@
     function refreshBooks(pageNum) {
         $.getJSON(String.format("/Adv/GetData?currentPage={0}&SortBy={1}&keywords={2}&location={3}&country={4}&category={5}&sminPrice={6}&smaxPrice={7}&type={8}&condition={9}", pageNum, $("#SortBy option:selected").text(), $("#keywords").val(), $("#id-location").val(), $("#Country option:selected").val(), $("#search-category option:selected").val(), $("#minPrice").val(), $("#maxPrice").val(), $("#ajaxTabs li[class='active']").attr("id"), $("#condition option:selected").val()),
             function (booksdata) {
-                booksdata.forEach(function (el) {
-                    el.Delete = function () {
-                        $.ajax({
-                            url: el.deleteurl
-                        });
-                        GetServerData(defaultPageNum);
-                    }
-                });
+                /* booksdata.forEach(function (el) {
+                     el.Delete = function () {
+                         $.ajax({
+                             url: el.deleteurl
+                         });
+                         GetServerData(defaultPageNum);
+                     }
+                 });*/
                 ko.mapping.fromJS(booksdata, {}, viewModel.Advs);
+                
+                if (count > 1) {
+                    //$(".add-details").eq(6).append($(".ads-details-add"));
+                    
+                    $(".item-list:nth-child(8n)").after("<div class='ads-details-add'></div>");
+                    //$(".item-list:nth-child(5n)").add(".item-list:nth-child(5n)").after("<div style='color:black'>test</div>");
+                    //Подумать как тут можно вкрячить дополнительный параметр
+                    $(".ads-details-add").load("/Category/ReserveGoogleAdvView/");
+                } else {
+                    $('#additional').hide();
+                }
             });
     }
 
@@ -101,6 +137,7 @@
     }
 
     $(document).ready(function () {
+
         LoadData();
         ko.applyBindings(viewModel);
 
@@ -125,7 +162,7 @@
 
 @model DAL.AdvModel
 @*<form action="/Category/Search/" method="GET">*@
-<div class="inner-box relative">
+<div id="adsgoogle" class="text-center">
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- adv large long box -->
     <ins class="adsbygoogle"
@@ -142,31 +179,28 @@
 <div class="search-row-wrapper">
     <div class="container ">
         <div class="col-sm-3">
-            <input id="keywords" name="keywords" class="form-control selecter" type="text" placeholder="Что найти? Например: мобильные" value="@Model.KeyWords">
+            <input id="keywords" name="keywords" class="form-control" type="text" placeholder="Что найти? Например: мобильные" value="@Model.KeyWords">
         </div>
         <div class="col-sm-3">
-            <select class="form-control selecter" name="category" id="search-category">
-
-                <option @if (Model._subCategories.Where(x => x.ID == @Model.Category).FirstOrDefault() == null) { <text> selected="selected" </text>     } value="0">Все категории</option>
-
+            <select class="form-control" name="category" id="search-category">
+                <option @if (Model._subCategories.Where(x => x.ID == @Model.Category).FirstOrDefault() == null) { <text> selected="selected" </text>        } value="0">Все категории</option>
                 @foreach (var item in Model._categories)
                 {
                     <option value="@item.ID" style="background-color: #E9E9E9; font-weight: bold;" disabled="disabled"> - @item.Name - </option>
-
                     foreach (var subitem in Model._subCategories.Where(x => x.Category_Id == item.ID))
                     {
-                        <option @if (@Model.Category == @subitem.ID) { <text> selected="selected" </text>    } value="@subitem.ID">@subitem.Name</option>
+                        <option @if (@Model.Category == @subitem.ID) { <text> selected="selected" </text>       } value="@subitem.ID">@subitem.Name</option>
                     }
                 }
             </select>
         </div>
         <div class="col-sm-2">
-            <select class="form-control selecter" onchange="filterCountry(this.value);" id="Country" name="Country" class="form-control">
+            <select class="form-control" onchange="filterCountry(this.value);" id="Country" name="Country" class="form-control">
                 @foreach (var item in Model._countries)
                 {
-                    <option @if (@item.CountryId == 643) { <text>
+                    <option @if (@item.Code == Model.CountryCode) { <text>
                             selected="selected"
-                            </text>            } value="@item.CountryId">
+                            </text>               } value="@item.CountryId">
                         @item.CountryName
                     </option>
                 }
@@ -174,14 +208,14 @@
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="location" id="id-location">
-                <option @if (string.IsNullOrEmpty(@Model.LocationName)) { <text> selected="selected" </text>           } value="-1">Все</option>
+                <option @if (string.IsNullOrEmpty(@Model.LocationName)) { <text> selected="selected" </text>              } value="-1">Все</option>
 
                 @foreach (var item in Model._locations.OrderBy(x => x.Name))
                 {
                     <option style="visibility: hidden; display: block;" countryid="@item.countryId"
                             @if (Model.LocationName == item.Name) {  <text>
                             selected="selected"
-                            </text>         } value="@item.CityId">
+                            </text>            } value="@item.CityId">
                         @item.Name
                     </option>
 
@@ -190,7 +224,7 @@
             </select>
         </div>
         <div class="col-sm-2">
-            <button class="btn btn-block btn-primary" id="SearchBtn"> @*<i class="fa fa-search"></i>*@ Найти</button>
+            <button class="btn btn-block btn-primary slideInRight" id="SearchBtn"> @*<i class="fa fa-search"></i>*@ Найти</button>
         </div>
     </div>
 </div>
@@ -201,6 +235,25 @@
             <div class="col-sm-3 page-sidebar">
                 <aside>
                     <div class="inner-box">
+                        <div class="locations-list list-filter">
+                            <h5 class="list-title"><strong><a href="#">Состояние</a></strong></h5>
+                            <select class="form-control selecter" name=" condition" id="@Html.IdFor(x => x.condition)">
+                                <option selected="selected" value="0" selected="selected">
+                                    Все
+                                </option>
+
+                                <option value="2">
+                                    Новое
+                                </option>
+
+                                <option value="1">
+                                    Б/У
+                                </option>
+                            </select>
+                        </div>
+                        <!--/.list-filter-->
+                        <div style="clear: both"></div>
+
                         <div class="locations-list list-filter">
                             <h5 class="list-title"><strong><a href="#">Ценовой диапазон</a></strong></h5>
 
@@ -215,7 +268,7 @@
                                 <button id="smallSearchBtn" class="btn btn-primary pull-right" type="submit"><i class="fa fa-search"></i></button>
                             </div>
 
-                            <div style="clear:both"></div>
+                            <div style="clear: both"></div>
                         </div>
                         <!--/.list-filter-->
                         @*<div class="categories-list  list-filter">
@@ -261,27 +314,8 @@
                                 </ul>
                             </div>*@
                         <!--/.list-filter-->
-                        <div class="locations-list  list-filter">
-                            <h5 class="list-title"><strong><a href="#">Состояние</a></strong></h5>
-                            <select class="form-control selecter" name=" condition" id="@Html.IdFor(x => x.condition)">
-                                <option selected="selected" value="0" selected="selected">
-                                    Все
-                                </option>
 
-                                <option value="2">
-                                    Новое
-                                </option>
-
-                                <option value="1">
-                                    Б/У
-                                </option>
-                            </select>
-                        </div>
-                        <!--/.list-filter-->
-                        <div style="clear: both"></div>
                     </div>
-
-
 
                     <div class="inner-box relative">
                         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -294,17 +328,27 @@
                         <script>
                             (adsbygoogle = window.adsbygoogle || []).push({});
                         </script>
+                    </div>
 
+                    <div id="additional" class="inner-box relative">
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- adv large long box -->
+                        <ins class="adsbygoogle"
+                             style="display: block"
+                             data-ad-client="ca-pub-9707096941681181"
+                             data-ad-slot="8754484356"
+                             data-ad-format="auto"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
                     </div>
                     <!--/.categories-list-->
                 </aside>
             </div>
             <!--/.page-side-bar-->
             <div class="col-sm-9 page-content col-thin-left">
-      
                 <div class="category-list">
                     <div class="tab-box ">
-
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs add-tabs" id="ajaxTabs" role="tablist">
                             <li class="active"><a href="#allAds" id="allAds" role="tab" data-toggle="tab">Все@*<span class="badge">228,705</span>*@</a></li>
@@ -338,18 +382,14 @@
 
                             <h3>
                                 <span id="NotFound" class="label label-info">
-
                                     Пока ничего не найдено, попробуйте изменить условия поиска или добавить свое объявление
-
                                 </span>
-
-
 
                                 <span class="label label-danger" id="MaxPageWarning">
                                     Слишком много результатов поиска, показаны первые 15
                                 </span>
                             </h3>
-                            
+                           
                             <div data-bind="foreach: Advs" class="tab-pane active" id="allAds">
                                 <div class="item-list">
                                     <div data-bind="attr: { style: topAdsVisible }" class="cornerRibbons topAds">
@@ -361,8 +401,8 @@
                                     <div data-bind="attr: { style: urgentAdsVisible }" class="cornerRibbons urgentAds">
                                         <a href="#">Срочно</a>
                                     </div>
-                                    <div class="col-sm-2 no-padding photobox">
-                                        <div class="add-image">
+                                    <div class="col-sm-2 no-padding photobox slideInRight">
+                                        <div class="add-image ">
                                             @*<span data-bind="text: PhotoCount" class="photo-count"><i class="fa fa-camera"></i> </span>*@
                                             <a data-bind="attr: { href: adsurl }"><img data-bind="attr: { src: firstphoto }" class="thumbnail no-margin" src="" alt="img"></a>
                                         </div>
@@ -370,8 +410,8 @@
                                     <!--/.photobox-->
                                     <div class="col-sm-7 add-desc-box">
                                         <div class="add-details">
-                                            <h5 class="add-title">
-                                                <a data-bind="attr: { href: adsurl }">
+                                            <h5 class="add-title slideInRight">
+                                                <a data-bind="attr: { href: adsurl }" href="" target="_blank">
                                                     <span data-bind="text: Name"></span>
                                                 </a>
                                             </h5>
@@ -382,14 +422,15 @@
                                                 <span data-bind="text: LocationName" class="item-location"><i class="fa fa-map-marker"></i> </span>
                                             </span>
                                         </div>
-                                        <div class="info-row"></div>
-                                    </div>
+                                        
+                                        </div>
+                                    
                                     <!--/.add-desc-box-->
                                     <div class="col-sm-3 text-right  price-box">
-                                        <h2 data-bind="text: PriceLabel" class="item-price"> 999 </h2>
+                                        <h2 data-bind="text: PriceLabel" class="item-price text-warning"> 999 </h2>
                                         @*<a class="btn btn-danger  btn-sm make-favorite"> <i class="fa fa-certificate"></i> <span>Top Ads</span> </a> *@
-                                        <a class="btn btn-danger  btn-sm make-favorite">
-                                            <i class="fa fa-heart"></i><span>Сохранить</span>
+                                        <a data-bind="{attr: { onclick: SaveAdsUrl,  class: SavedAdsClass} }" class="">
+                                            <i class="fa fa-heart"></i><span data-bind="text: SavedText">Сохранить</span>
                                         </a>
                                     </div>
                                     <!--/.add-desc-box-->
@@ -404,15 +445,15 @@
                     </div>
                     <div class="pagination-bar text-center">
                         <ul class="pagination">
-                            <li><a class="pagination-btn" onclick="GetServerData(currentPage - 1); "> <<</a></li>
+                            <li><a class="pagination-btn " onclick="GetServerData(parseInt(currentPage, 10) - 1); "> <i class="fa fa-chevron-left"></i></a></li>
                         </ul>
                         <ul class="pagination" data-bind="foreach: PagedItems">
                             <li>
-                                <a class="pager-btn" data-bind="text: pagenum" onclick="GetServerData(this.innerHTML);"></a>
+                                <a class="pager-btn" data-bind="text: pagenum" onclick=" GetServerData(this.innerHTML); "></a>
                             </li>
                         </ul>
                         <ul class="pagination">
-                            <li><a class="pagination-btn" onclick="GetServerData(currentPage + 1); "> >> </a></li>
+                            <li><a class="pagination-btn" onclick="GetServerData(parseInt(currentPage, 10) + 1); "> <i class="fa fa-chevron-right"></i> </a></li>
                         </ul>
                     </div>
                     <!--/.pagination-bar -->
@@ -498,7 +539,7 @@
                                 <li> <a href="#" title="East Elmhurst">East Elmhurst</a> </li>
                                 <li> <a href="#" title="East Greenbush">East Greenbush</a> </li>
                                 <li> <a href="#" title="East Meadow">East Meadow</a> </li>
-
+                                <li> <a href="#" title="East Meadow">East Meadow</a> </li>
                             </ul>
                         </div>
                         <div class="col-md-4">
@@ -515,7 +556,7 @@
                                 <li> <a href="#" title="Gansevoort">Gansevoort</a> </li>
                                 <li> <a href="#" title="Garden City">Garden City</a> </li>
 
-
+                                <li> <a href="#" title="East Meadow">East Meadow</a> </li>
                             </ul>
                         </div>
                         <div class="col-md-4">
@@ -531,7 +572,55 @@
                                 <li> <a href="#" title="Pelham">Pelham</a> </li>
                                 <li> <a href="#" title="Penn Yan">Penn Yan</a> </li>
                                 <li> <a href="#" title="Peru">Peru</a> </li>
-
+                                <li> <a href="#" title="East Meadow">East Meadow</a> </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-link list-unstyled">
+                                <li> <a href="#" title="Oceanside">Oceanside</a> </li>
+                                <li> <a href="#" title="Orangeburg">Orangeburg</a> </li>
+                                <li> <a href="#" title="Orient">Orient</a> </li>
+                                <li> <a href="#" title="Ozone Park">Ozone Park</a> </li>
+                                <li> <a href="#" title="Palatine Bridge">Palatine Bridge</a> </li>
+                                <li> <a href="#" title="Patterson">Patterson</a> </li>
+                                <li> <a href="#" title="Pearl River">Pearl River</a> </li>
+                                <li> <a href="#" title="Peekskill">Peekskill</a> </li>
+                                <li> <a href="#" title="Pelham">Pelham</a> </li>
+                                <li> <a href="#" title="Penn Yan">Penn Yan</a> </li>
+                                <li> <a href="#" title="Peru">Peru</a> </li>
+                                <li> <a href="#" title="East Meadow">East Meadow</a> </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-link list-unstyled">
+                                <li> <a href="#" title="Oceanside">Oceanside</a> </li>
+                                <li> <a href="#" title="Orangeburg">Orangeburg</a> </li>
+                                <li> <a href="#" title="Orient">Orient</a> </li>
+                                <li> <a href="#" title="Ozone Park">Ozone Park</a> </li>
+                                <li> <a href="#" title="Palatine Bridge">Palatine Bridge</a> </li>
+                                <li> <a href="#" title="Patterson">Patterson</a> </li>
+                                <li> <a href="#" title="Pearl River">Pearl River</a> </li>
+                                <li> <a href="#" title="Peekskill">Peekskill</a> </li>
+                                <li> <a href="#" title="Pelham">Pelham</a> </li>
+                                <li> <a href="#" title="Penn Yan">Penn Yan</a> </li>
+                                <li> <a href="#" title="Peru">Peru</a> </li>
+                                <li> <a href="#" title="East Meadow">East Meadow</a> </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-link list-unstyled">
+                                <li> <a href="#" title="Oceanside">Oceanside</a> </li>
+                                <li> <a href="#" title="Orangeburg">Orangeburg</a> </li>
+                                <li> <a href="#" title="Orient">Orient</a> </li>
+                                <li> <a href="#" title="Ozone Park">Ozone Park</a> </li>
+                                <li> <a href="#" title="Palatine Bridge">Palatine Bridge</a> </li>
+                                <li> <a href="#" title="Patterson">Patterson</a> </li>
+                                <li> <a href="#" title="Pearl River">Pearl River</a> </li>
+                                <li> <a href="#" title="Peekskill">Peekskill</a> </li>
+                                <li> <a href="#" title="Pelham">Pelham</a> </li>
+                                <li> <a href="#" title="Penn Yan">Penn Yan</a> </li>
+                                <li> <a href="#" title="Peru">Peru</a> </li>
+                                <li> <a href="#" title="East Meadow">East Meadow</a> </li>
                             </ul>
                         </div>
                     </div>

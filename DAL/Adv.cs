@@ -1,3 +1,5 @@
+using System;
+
 namespace DAL
 {
     public class Adv
@@ -28,6 +30,7 @@ namespace DAL
         public string SellerDistrict { get; set; }
         public int? SellerId { get; set; }
         public int Country { get; set; }
+        public DateTime Created { get; set; }
     }
 
     public class CarAdv : Adv
@@ -42,5 +45,6 @@ namespace DAL
         public int Model { get; set; }
         public int CarType { get; set; }
         public int CarModel { get; set; }
+        
     }
 }

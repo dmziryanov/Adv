@@ -6,6 +6,8 @@ using System.Runtime.Caching;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Serialization;
 using AdvSpareAuto.Models;
 using DAL;
 using RmsAuto.TechDoc;
@@ -15,6 +17,27 @@ using CacheItemPriority = System.Web.Caching.CacheItemPriority;
 
 namespace AdvSpareAuto.Controllers
 {
+    [XmlRoot("auto-catalog")]
+    public class auto_catalog
+    {
+        [XmlElement("creation_date")] 
+        public DateTime creation_date;
+
+        [XmlElement("host")]
+        public string host;
+
+        [XmlElement("offers")]
+        public offers offers;
+
+    }
+
+    [XmlRoot("offers")]
+    public class offers
+    {
+        [XmlElement("offer")]
+        public List<CarAdv> offer { get; set; }
+    }
+
     public class ParameterBinder : IModelBinder
     {
         public string ActualParameter { get; private set; }
@@ -173,7 +196,7 @@ namespace AdvSpareAuto.Controllers
         {
             using (var a = new AdvContext())
             {
-                a.Database.ExecuteSqlCommand("insert into Sitemessage (AdvId,FromId,  FromPhone, FromEmail, Text) values ({0}, {1}, {2}, [3], {4})", page, userId, phone, mail, text);
+                a.Database.ExecuteSqlCommand("insert into Sitemessage (AdvId,FromId,  FromPhone, FromEmail, Text) values ({0}, {1}, {2}, {3}, {4})", page, userId, phone, mail, text);
             }
         }
 
@@ -214,10 +237,35 @@ namespace AdvSpareAuto.Controllers
 
             adv.CurrentUser = _advRepository.GetUser(adv.SellerId.HasValue ? adv.SellerId.Value : 0);
             _advRepository.IncreaseViewCount(Convert.ToInt32(AdvNo), adv.ViewCount);
-            ViewBag.Message = string.Format("Купить {0} в {1}", adv.Name, adv.LocationName);
+            
+            //SEO
+            List<int> cats = new List<int>();
+            cats.Add(19);
+            var CatSeoPrefix = cats.Contains(adv.SubCategory) ? "Найти работу " : "Купить ";
+            ViewBag.Message = string.Format("{2} {0} в {1}", adv.Name + " " + adv.condition.GetDescription(), adv.LocationName, CatSeoPrefix);
+            ViewBag.Keywords = string.Format("{2} {0} в {1}", adv.Name + " " + adv.condition.GetDescription(), adv.LocationName, CatSeoPrefix);
+            ViewBag.Description = adv.Description;
+
             return View(adv);
         }
 
+        public void XmlFeed()
+        {
+            string xml;
+            auto_catalog ac = new auto_catalog() { offers = new offers(), creation_date = DateTime.Now, host = "adv.spare-auto.com"};
+            
+            ac.offers.offer = _advRepository.GetAll().ToList();
+            XmlSerializer xsSubmit = new XmlSerializer(typeof(auto_catalog));
+            
+            using (StringWriter sww = new StringWriter())
+            using (XmlWriter writer = XmlWriter.Create(sww))
+            {
+                xsSubmit.Serialize(writer, ac);
+                xml = sww.ToString(); // Your XML
+            }
+            Response.ContentType = "text/xml";
+            Response.Write(xml);
+        }
 
 
         public ActionResult MyAdv()
@@ -254,8 +302,10 @@ namespace AdvSpareAuto.Controllers
             // GetBooksRequestParams(out SortBy sortBy, out string keywords, out int currentPage);
 
             var res = (List<AdvModel>)HttpRuntime.Cache.Get(sortBy + keywords + location + country + category + sminPrice + smaxPrice + type + condition + "&&" + currentPage + "&&" + pageSize);
-
-            return Json(res.ToList(), JsonRequestBehavior.AllowGet);
+            if (res != null)
+                return Json(res.ToList(), JsonRequestBehavior.AllowGet);
+            else
+                return Json(new List<AdvModel>(), JsonRequestBehavior.AllowGet);
         }
 
         public void Share(int page)
@@ -369,28 +419,95 @@ namespace AdvSpareAuto.Controllers
             return Json(Enumerable.Range(0, pagecount).ToList().Select(x => new { pagenum = x + 1 }), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SaveAdv(int id)
+        public ViewResult Favorite()
         {
-            throw new NotImplementedException();
-        }
-
-        public void AddToFavotites(int id)
-        {
-            var list = (List<int>) Session["favorites"];
+            HashSet<int> list = _advRepository.GetFavorite(Request.ServerVariables["REMOTE_ADDR"]);
             if (list != null)
             {
-                list.Add(id);
+                var result = _advRepository.Get(list.Distinct().ToArray());
+                        Array.ForEach(result.ToArray(), model =>
+            {
+                using (var _advContext = new AdvContext())
+                {
+                    model.ImgIds =
+                        _advContext.Database.SqlQuery<int>("select PhotoId from dbo.advPhoto where AdvId ={0}",
+                            model.Id)
+                            .ToArray();
+                }
+
+                model.LocationName = AdvRepository._locations.FirstOrDefault(x => x.CityId == model.Location).Name;
+                model.CategoryName = AdvRepository._subCategories.FirstOrDefault(x => x.ID == model.Category).Name;
+            });
+                        return View(result);
             }
             else
             {
-                Session["favorites"] = new List<int>();
+                return View("Error", new ErrorInfo() { message = (Session["favorites"] == null).ToString() });
             }
-            if (WebSecurity.CurrentUserId > -1)
+
+        }
+
+        public JsonResult GetSavedAdv()
+        {
+            var list =  _advRepository.GetFavorite( Request.ServerVariables["REMOTE_ADDR"]);
+            if (list != null)
             {
-                //ToDO: сделать сохранение в базу
+                return Json(list.Select(x => x).Distinct(), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(Enumerable.Range(0, 0).ToList().Select(x => new { pagenum = x + 1 }), JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+
+        public bool SaveAdv(int id)
+        {
+            var list = _advRepository.GetFavorite(Request.ServerVariables["REMOTE_ADDR"]);
+            if (list != null)
+            {
+                if (list.Contains(id))
+                {
+                    _advRepository.Remove(Request.ServerVariables["REMOTE_ADDR"], id);
+                    if (WebSecurity.CurrentUserId > -1)
+                    {
+                        //ToDO: remove из базы
+                    }
+                    return false;
+                }
+                else
+                {
+                    _advRepository.AddFavorite(Request.ServerVariables["REMOTE_ADDR"], id);
+                    if (WebSecurity.CurrentUserId > -1)
+                    {
+                        //ToDO: сделать сохранение в базу
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                
+                _advRepository.AddFavorite(Request.ServerVariables["REMOTE_ADDR"], id);
+                
+                
+                if (WebSecurity.CurrentUserId > -1)
+                {
+                    //ToDO: сделать сохранение в базу
+                }
+
+                return true;
             }
         }
 
+        [HttpGet, HttpPost, ActionName("AddToFavotites")]
+        public ActionResult AddToFavotites(int id)
+        {
+           
+            return View();
+        }
+
+        [ValidateInput(false)]
         public ActionResult CreateCarAdv(CarAdvModel model)
         {
             model.Category = _carCategory;

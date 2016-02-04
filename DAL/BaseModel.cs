@@ -14,5 +14,7 @@ namespace DAL
     {
         public int CountryId { get; set; }
         public string CountryName { get; set; }
+
+        public string Code { get; set; }
     }
 }

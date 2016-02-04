@@ -11,6 +11,11 @@ namespace DAL
         {
         }
 
+        public AdvContext(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         public DbSet<Adv> advs { get; set; }
         public DbSet<CarAdv> caradvs { get; set; }
         public DbSet<AdvPhoto> AdvPhotos { get; set; }
@@ -26,6 +31,10 @@ namespace DAL
         public DbSet<SiteMessage> SiteMessages { get; set; }
 
         public DbSet<UserProfile> UserProfiles { get; set; }
+
+        public DbSet<CarBrand> CarBrand { get; set; }
+
+        public DbSet<CarModel> CarModel { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

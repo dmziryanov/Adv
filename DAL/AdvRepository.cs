@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 using System.Linq;
@@ -19,21 +20,12 @@ namespace DAL
 
         }
 
-        public IEnumerable<AdvModel> GetAll()
+        public IEnumerable<CarAdv> GetAll()
         {
-            Array.ForEach(_tmpList.ToArray(), model =>
-            {
                 using (_advContext = new AdvContext())
                 {
-                    model.ImgIds =
-                        _advContext.Database.SqlQuery<int>("select PhotoId from dbo.advPhoto where AdvId ={0}", model.Id)
-                            .ToArray();
+                    return _advContext.Database.SqlQuery<CarAdv>("select TOP 5000 * from dbo.adv, dbo.caradv where caradv.id = adv.id").ToList();
                 }
-                model.LocationName = _locations.FirstOrDefault(x => x.CityId == model.Location).Name;
-                model.CategoryName = _subCategories.FirstOrDefault(x => x.ID == model.Category).Name;
-            });
-
-            return _tmpList;
         }
 
         public IEnumerable<AdvModel> GetFilteredSortedPageResult(AdvType type, AdvCondition condition, string keywords, string country, int location, int pageSize, int currentPage, string OrderExpr, double minPrice, double maxPrice)
@@ -41,7 +33,7 @@ namespace DAL
             if (string.IsNullOrEmpty(OrderExpr.Trim()))
                 OrderExpr = "Order by Name";
 
-            var queryExprCount = "Select MAX(k) From (select ROW_NUMBER() OVER (PARTITION BY 1 " + OrderExpr + " ) k from dbo.Adv a where type > -1 ";
+            var queryExprCount = "Select count(*) from dbo.Adv a where type > -1 ";
             if (type > 0)
                 queryExprCount += "and type = " + (int)type;
 
@@ -72,8 +64,7 @@ namespace DAL
                 
             }
 
-            queryExprCount += ") b";
-
+            
             var queryExpr = "Select * From (select ROW_NUMBER() OVER (PARTITION BY 1 " + OrderExpr + " ) k, a.* from dbo.Adv a where type > -1 ";
             if (type > 0)
                 queryExpr += "and type = " + (int)type;
@@ -107,7 +98,7 @@ namespace DAL
 
             using (_advContext = new AdvContext())
             {
-                var i = _advContext.Database.SqlQuery<long?>(queryExprCount).FirstOrDefault();
+                var i = _advContext.Database.SqlQuery<int?>(queryExprCount).FirstOrDefault();
                 var col = _advContext.Database.SqlQuery<AdvModel>(queryExpr).ToList();
                 if (col.FirstOrDefault() != null)
                     col.FirstOrDefault().CurrentSearchPageCount = i.HasValue ? i.Value : 0;
@@ -121,7 +112,7 @@ namespace DAL
             if (string.IsNullOrEmpty(OrderExpr.Trim()))
                 OrderExpr = "Order by Name";
 
-            var queryExprCount = "Select MAX(k) From (select ROW_NUMBER() OVER (PARTITION BY 1 " + OrderExpr + " ) k from dbo.Adv a where type > -1 ";
+            var queryExprCount = "Select count(*) from dbo.Adv a where type > -1 ";
             if (type > 0)
                 queryExprCount += " and type = " + (int)type;
 
@@ -156,8 +147,7 @@ namespace DAL
                 if (cid > 0)
                     queryExprCount += "and country = " + cid ;
             
-            queryExprCount += ") b";
-
+            
             var queryExpr = "Select * From (select ROW_NUMBER() OVER (PARTITION BY 1 " + OrderExpr + " ) k, a.* from dbo.Adv a where type > -1 ";
             if (type > 0)
                 queryExpr += " and type = " + (int)type;
@@ -193,7 +183,7 @@ namespace DAL
 
             using (_advContext = new AdvContext())
             {
-                var i = _advContext.Database.SqlQuery<long?>(queryExprCount).FirstOrDefault();
+                var i = _advContext.Database.SqlQuery<int?>(queryExprCount).FirstOrDefault();
                 var col = _advContext.Database.SqlQuery<AdvModel>(queryExpr).ToList();
                 if (col.FirstOrDefault() != null)
                     col.FirstOrDefault().CurrentSearchPageCount = i.HasValue ? i.Value : 0;
@@ -206,7 +196,7 @@ namespace DAL
             if (string.IsNullOrEmpty(OrderExpr.Trim()))
                 OrderExpr = "Order by Name";
 
-            var queryExprCount = "Select MAX(k) From (select ROW_NUMBER() OVER (PARTITION BY 1 " + OrderExpr + " ) k from dbo.Adv a where type > -1 ";
+            var queryExprCount = "Select count(*) k from dbo.Adv a where type > -1 ";
             if (type > 0)
                 queryExprCount += " and type = " + (int)type;
 
@@ -230,7 +220,7 @@ namespace DAL
             if (!string.IsNullOrEmpty(keywords))
                 queryExprCount += string.Format(" and name like {0} ", "'%" + keywords + "%'");
 
-            queryExprCount += String.Format("and subcategory = " + cat + ") b");
+            queryExprCount += String.Format("and subcategory = " + cat );
 
             
             var queryExpr = "Select * From (select ROW_NUMBER() OVER (PARTITION BY 1 " + OrderExpr + " ) k, a.* from dbo.Adv a where type > -1 ";
@@ -262,7 +252,7 @@ namespace DAL
             
             using (_advContext = new AdvContext())
             {
-                var i = _advContext.Database.SqlQuery<long?>(queryExprCount).FirstOrDefault();
+                var i = _advContext.Database.SqlQuery<int?>(queryExprCount).FirstOrDefault();
                 var col = _advContext.Database.SqlQuery<AdvModel>(queryExpr).ToList();
                 if (col.FirstOrDefault() != null) 
                     col.FirstOrDefault().CurrentSearchPageCount = i.HasValue ? i.Value : 0;
@@ -324,12 +314,32 @@ namespace DAL
             return model;
         }
 
+        public IEnumerable<AdvModel> Get(int[] id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                if (id.Count() > 0)
+                {
+                    string delimeter = ",";
+                    return
+                        _advContext.Database.SqlQuery<AdvModel>("select * from dbo.adv where Id in (" +
+                                                                id.Select(x => x.ToString())
+                                                                    .Aggregate((i, j) => i + delimeter + j) + ")")
+                            .ToArray();
+                }
+                else
+                {
+                    return new List<AdvModel>();
+                }
+            }
+        }
+
         public IEnumerable<AdvModel> GetSimilar(AdvModel sample)
         {
             using (_advContext = new AdvContext())
             {
                 var deltap = sample.Price*0.1;
-                return _advContext.Database.SqlQuery<AdvModel>("select * from dbo.adv where category = {0} and price > ({2} - {1}) and price < ({2} + {1}) and id <> {3}", sample.SubCategory, deltap, sample.Price, sample.Id).ToList();
+                return _advContext.Database.SqlQuery<AdvModel>("select TOP 10 * from dbo.adv where category = {0} and price > ({2} - {1}) and price < ({2} + {1}) and id <> {3}", sample.SubCategory, deltap, sample.Price, sample.Id).ToList();
             }
         }
 
@@ -380,14 +390,14 @@ namespace DAL
                     IsFeatured = advModel.IsFeatured,
                     SellerId = advModel.SellerId,
                     Country = advModel.Country,
-                    Currency = advModel.Currency
+                    Currency = advModel.Currency,
+                        Created = advModel.Created > new DateTime(1,1,1) ? advModel.Created : DateTime.Now
                 };
                 advContext.ImageFiles.AddOrUpdate(advModel.Imgs.ToArray());
                 advContext.SaveChanges();
                 advContext.advs.AddOrUpdate(a);
                 advContext.SaveChanges();
-                advContext.AdvPhotos.AddOrUpdate(
-                    advModel.Imgs.Select(x => new AdvPhoto() { AdvId = a.Id, PhotoId = x.FileID }).ToArray());
+                advContext.AdvPhotos.AddOrUpdate(advModel.Imgs.Select(x => new AdvPhoto() { AdvId = a.Id, PhotoId = x.FileID }).ToArray());
                 advContext.SaveChanges();
             }
         }
@@ -439,8 +449,9 @@ namespace DAL
             {
                 try
                 {
-                    _ctx.Database.ExecuteSqlCommand("Update dbo.UserProfile SET About = {1}, Gender={2}, HideNumber={3}, Phone={4}, LastName={5}, FirstName={6}, UserType = {7}  where UserName =  {0}",
-                        model.UserName, model.About, model.Gender, model.HideNumber, model.Phone, model.LastName, model.FirstName, model.UserType);
+                    
+                    _ctx.Database.ExecuteSqlCommand("Update dbo.UserProfile SET About = {1}, Gender={2}, HideNumber={3}, Phone={4}, LastName={5}, FirstName={6}, UserType = {7}, UserAvatarId = {8}  where UserName =  {0}",
+                        model.UserName, model.About, model.Gender, model.HideNumber, model.Phone, model.LastName, model.FirstName, model.UserType, model.UserAvatarId);
                     _ctx.SaveChanges();
                 }
                 catch (DbEntityValidationException ex)
@@ -541,7 +552,8 @@ namespace DAL
                     Currency = advModel.Currency,
                     Brand = advModel.Brand,
                     CarModel = advModel.CarModel,
-                    CarType = advModel.CarType
+                    CarType = advModel.CarType,
+                    Created = advModel.Created > new DateTime(1,1,1) ? advModel.Created : DateTime.Now
                 };
                 advContext.ImageFiles.AddOrUpdate(advModel.Imgs.ToArray());
                 advContext.SaveChanges();
@@ -550,6 +562,129 @@ namespace DAL
                 advContext.AdvPhotos.AddOrUpdate(
                     advModel.Imgs.Select(x => new AdvPhoto() { AdvId = a.Id, PhotoId = x.FileID }).ToArray());
                 advContext.SaveChanges();
+            }
+        }
+
+        public void SaveBlogImage(int id, int photoId)
+        {
+            using (var _advContext = new AdvContext())
+            {
+                _advContext.Database.ExecuteSqlCommand("insert into PostPhoto values ({0},{1})", photoId, id);
+            }
+        }
+
+        public int[] GetPhotoIds(int id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<int>("select PhotoId from PostPhoto where PostId = {0}", id).ToArray();
+            }
+        }
+
+
+        public int[] GetFileIds(int id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                return
+                    _advContext.Database.SqlQuery<int>("select PhotoId from PostAttachment where PostId = {0}", id).ToArray();
+            }
+        }
+
+        public string[] GetFileNames(int id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<string>("select [FileName] from PostAttachment a, ImageFile b where a.PhotoId = b.FileID and PostId = {0}", id).ToArray();
+            }
+        }
+
+        public void SaveBlogFile(int id, int photoId)
+        {
+            using (var _advContext = new AdvContext())
+            {
+                (_advContext as IObjectContextAdapter).ObjectContext.CommandTimeout = 120;
+                _advContext.Database.ExecuteSqlCommand("insert into PostAttachment values ({0},{1})", photoId, id);
+            }
+        }
+
+        public int GetAdvCountByUserId(int userId)
+        {
+            using (var _advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<int>("select count(*) from Adv where sellerId = {0}", userId).FirstOrDefault();
+            }
+        }
+
+        public int GetFavoriteCountByUserId(int userId)
+        {
+            using (var _advContext = new AdvContext())
+            {
+                var h = ((HashSet<int>) HttpContext.Current.Session["favorite"]);
+                if (h != null)
+                    return h.Count();
+                else return 0;
+                // _advContext.Database.SqlQuery<int>("select count(*) from Adv where userId = {0}", userId).FirstOrDefault();
+            }
+        }
+
+        public int GetViewCountByUserId(int userId)
+        {
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<int>("select ISNULL(Sum(ViewCount),0) from Adv where sellerId = {0}", userId).FirstOrDefault();
+            }
+        }
+
+        public DateTime GetLoginDate(string userId)
+        {
+            using (_advContext = new AdvContext())
+            {
+                return _advContext.Database.SqlQuery<DateTime>("Select ISNULL(LastLogin, getdate()) from Userprofile where UserName = {0}", userId).FirstOrDefault();
+            }
+        }
+
+        public void CloseAccount(int currentUserId, int inlineRadioOptions)
+        {
+            using (_advContext = new AdvContext())
+            {
+                _advContext.Database.ExecuteSqlCommand("update Userprofile set Opened = 0 where UserId = {0}", currentUserId);
+            }
+        }
+
+        public HashSet<int> GetFavorite(string serverVariable)
+        {
+            using (_advContext = new AdvContext())
+            {
+                var l = new HashSet<int>(); 
+                var list = _advContext.Database.SqlQuery<int>("select AdvId from Favorite where IP = {0}", serverVariable).ToList();
+                list.ForEach(x => l.Add(x));
+                return l;
+            }
+        }
+
+        public void AddFavorite(string serverVariable, int i)
+        {
+            using (_advContext = new AdvContext())
+            {
+                _advContext.Database.ExecuteSqlCommand("insert into Favorite (IP, AdvId) values ({0},{1})", serverVariable, i);
+            }
+        }
+
+        public void Remove(string serverVariable, int id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                _advContext.Database.ExecuteSqlCommand("delete from Favorite where IP = {0} and AdvId = {1}", serverVariable, id);
+            }
+        }
+
+
+        public void UpdateLoginDate(string userId)
+        {
+            using (var _advContext = new AdvContext())
+            {
+                _advContext.Database.ExecuteSqlCommand("update Userprofile set LastLogin = getdate() where UserName = {0}", userId);
             }
         }
 
@@ -592,7 +727,7 @@ namespace DAL
             {
                 _subCategories = _advContext.Database.SqlQuery<Category>("select * from dbo.SubCategory").ToList();
                 _categories = _advContext.Database.SqlQuery<Category>("select a.Id, a.Name, IconName, Count(NULLIF(c.id, 0)) as Count from dbo.Category a LEFT JOIN dbo.SubCategory b ON a.id = b.category_id LEFT JOIN dbo.Adv c ON b.id = c.subcategory group by a.Id, a.Name, IconName Order by a.Name").ToList();
-                _users = _advContext.Database.SqlQuery<RegisterModel>("select * from dbo.UserProfile a, [dbo].[webpages_Membership] b where a.UserId = b.UserId").ToList();
+                _users = ToList();
             }
 
             using (_commonContext = new CommonContext())
@@ -602,6 +737,17 @@ namespace DAL
 
             }
 
+        }
+
+        public List<RegisterModel> ToList()
+        {
+            using (_advContext = new AdvContext())
+            {
+                return
+                    _advContext.Database.SqlQuery<RegisterModel>(
+                        "select * from dbo.UserProfile a, [dbo].[webpages_Membership] b where a.UserId = b.UserId")
+                        .ToList();
+            }
         }
     }
 }

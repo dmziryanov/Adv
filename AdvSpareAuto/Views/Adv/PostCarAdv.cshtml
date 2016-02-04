@@ -8,7 +8,6 @@
             $('[countryid="' + id + '"').attr('style', 'visibility:visible; display:block;');
         }
 
-
         $("#Manufacturer").load("/Car/Brand/");
 
         LoadModels = function (id) {
@@ -19,8 +18,6 @@
             $("#modeldiv").load("/Car/Model/" + id).success($("#showload").hide());
 
         }
-
-
 
         LoadTypes = function (id) {
             $("#showload").attr('style', 'visibility:visible; display: block;');
@@ -39,8 +36,6 @@
 
         filterCountry(643); //Russia
     });
-
-
 
 </script>
 
@@ -91,15 +86,15 @@
 
                                         </div>
 
-                                    <div style="display: none" id="showload">
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label" for="Adtitle">Загрузка...</label>
-                                            <div class="col-md-8">
-                                                <img src="http://statwebaz.com/templates/default/assets/img/process.gif" />
-                                                @*<span class="help-block">Пробег</span>*@
+                                        <div style="display: none" id="showload">
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label" for="Adtitle">Загрузка...</label>
+                                                <div class="col-md-8">
+                                                    <img src="http://statwebaz.com/templates/default/assets/img/process.gif" />
+                                                    @*<span class="help-block">Пробег</span>*@
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
 
                                         <div class="form-group">
@@ -116,7 +111,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="Adtitle">Пробег</label>
                                             <div class="col-md-8">
-                                                <input id="mileAge" name="mileAge" placeholder="Пробег,     км" class="form-control input-md" required="" type="text">
+                                                <input id="mileAge" name="mileAge" placeholder="Пробег, км" class="form-control input-md" required="" type="text">
                                                 @*<span class="help-block">Пробег</span>*@
                                             </div>
                                         </div>
@@ -264,6 +259,59 @@
                                                 <p class="help-block">Добавьте до 5 фотографий. Используйте реальные изображения, а не каталожные.</p>
                                             </div>
                                         </div>
+                                        <table width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <h3>Безопасность</h3><label><input type="checkbox" name="opt1" value="1"> Многофункциональный руль</label><br>
+                                                        <label><input type="checkbox" name="opt2" value="1"> Противотуманные фары</label><br>
+                                                        <label><input type="checkbox" name="opt3" value="1"> Ксеноновые фары</label><br>
+                                                        <label><input type="checkbox" name="opt4" value="1"> Противоугонная сигнализация</label><br>
+                                                        <label><input type="checkbox" name="opt5" value="1"> Противоугонное устройство</label><br>
+                                                        <label><input type="checkbox" name="opt6" value="1"> Омыватель фар</label><br>
+                                                        <label><input type="checkbox" name="opt7" value="1"> Датчик света</label><br>
+                                                        <label><input type="checkbox" name="opt8" value="1"> Датчик дождя</label><br>
+                                                        <label><input type="checkbox" name="opt9" value="1"> Датчик парковки</label><br>
+                                                        <label><input type="checkbox" name="opt10" value="1"> Антиблокировочная тормозная система (ABS)</label><br>
+                                                        <label><input type="checkbox" name="opt11" value="1"> Боковые подушки безопасности</label><br>
+                                                        <label><input type="checkbox" name="opt12" value="1"> Подушка безопасности пассажира</label><br>
+                                                        <label><input type="checkbox" name="opt13" value="1"> Подушка безопасности водителя</label><br>
+                                                        <label><input type="checkbox" name="opt14" value="1"> Система стабилизации (ESP, DSC, VDC, ESC)</label><br>
+                                                        <label><input type="checkbox" name="opt15" value="1"> Легкосплавные колесные диски</label><br>
+                                                        <label><input type="checkbox" name="opt16" value="1"> Стальные колесные диски</label><br>
+                                                        <label><input type="checkbox" name="opt17" value="1"> Шторки безопасности</label><br>
+                                                        <label><input type="checkbox" name="opt18" value="1"> Антипробуксовочная система (TCS, ASR, TRC)</label><br>
+                                                        <label><input type="checkbox" name="opt19" value="1"> Всесезонные шины</label><br>
+                                                        <label><input type="checkbox" name="opt20" value="1"> Зимние шины</label><br>
+                                                        <label><input type="checkbox" name="opt21" value="1"> Летние шины</label><br>
+                                                    </td>
+                                                    <td>
+                                                        <h3>Комфорт</h3><label><input type="checkbox" name="opt22" value="1"> Аудиосистема</label><br>
+                                                        <label><input type="checkbox" name="opt23" value="1"> Тонированные стекла</label><br>
+                                                        <label><input type="checkbox" name="opt24" value="1"> Навигационная система TVD / DVD система</label><br>
+                                                        <label><input type="checkbox" name="opt25" value="1"> Бортовой компьютер</label><br>
+                                                        <label><input type="checkbox" name="opt26" value="1"> Обивка салона ткань</label><br>
+                                                        <label><input type="checkbox" name="opt27" value="1"> Велюровый салон</label><br>
+                                                        <label><input type="checkbox" name="opt28" value="1"> Кожаный салон</label><br>
+                                                        <label><input type="checkbox" name="opt29" value="1"> Круиз-контроль</label><br>
+                                                        <label><input type="checkbox" name="opt30" value="1"> Центральный замок</label><br>
+                                                        <label><input type="checkbox" name="opt31" value="1"> Подогрев боковых зеркал</label><br>
+                                                        <label><input type="checkbox" name="opt32" value="1"> Подогрев передних сидений</label><br>
+                                                        <label><input type="checkbox" name="opt33" value="1"> Электрорегулировка пассажирского сиденья</label><br>
+                                                        <label><input type="checkbox" name="opt34" value="1"> Электрорегулировка водительского сиденья</label><br>
+                                                        <label><input type="checkbox" name="opt35" value="1"> Электрорегулировка боковых зеркал</label><br>
+                                                        <label><input type="checkbox" name="opt36" value="1"> Электростеклоподъемники</label><br>
+                                                        <label><input type="checkbox" name="opt37" value="1"> Люк</label><br>
+                                                        <label><input type="checkbox" name="opt38" value="1"> Регулируемая по вылету рулевая колонка</label><br>
+                                                        <label><input type="checkbox" name="opt39" value="1"> Регулируемая по высоте рулевая колонка</label><br>
+                                                        <label><input type="checkbox" name="opt40" value="1"> Усилитель руля</label><br>
+                                                        <label><input type="checkbox" name="opt41" value="1"> Климат-контроль</label><br>
+                                                        <label><input type="checkbox" name="opt42" value="1"> Кондиционер</label><br>
+                                                    </td>
+                                                </tr>
+                                                <tr></tr>
+                                            </tbody>
+                                        </table>
                                         <div class="content-subheading">
                                             <i class="icon-user fa"></i> <strong>Информация о продавце</strong>
                                         </div>
@@ -315,7 +363,7 @@
                                                     {
                                                         <option @if (@item.CountryId == 643) { <text>
                                                                 selected="selected"
-                                                                </text>        } value="@item.CountryId">
+                                                                </text>         } value="@item.CountryId">
                                                             @item.CountryName
                                                         </option>
                                                     }

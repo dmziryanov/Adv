@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebMatrix.WebData;
 
 namespace DAL
 {
@@ -18,7 +19,7 @@ namespace DAL
             using (_advContext = new AdvContext())
             {
                 var res = _advContext.Database.SqlQuery<Blog>("Select * From dbo.Blog where Id = {0}", id).FirstOrDefault();
-                res.Posts = _advContext.Database.SqlQuery<BlogPost>("Select * From dbo.BlogPost where BlogId = {0}", id).ToList();
+                res.Posts = _advContext.Database.SqlQuery<BlogPost>("Select a.*, b.FirstName + ' ' + b.LastName as UserName From dbo.BlogPost a, UserProfile b where a.UserId = b.UserId and BlogId = {0} order by LastEditDate desc", id).ToList();
                 return res;
             }
         }
@@ -35,6 +36,7 @@ namespace DAL
         {
             using (_advContext = new AdvContext())
             {
+                model.UserId = WebSecurity.CurrentUserId;
                 _advContext.Blogs.Add(model);
                 _advContext.SaveChanges();
             }
@@ -64,9 +66,7 @@ namespace DAL
         {
             using (_advContext = new AdvContext())
             {
-                return
-                    _advContext.Database.SqlQuery<BlogPost>("Select * From dbo.BlogPost where Id = {0}", id)
-                        .FirstOrDefault();
+                return _advContext.Database.SqlQuery<BlogPost>(@"Select a.*,  b.FirstName + ' ' + b.LastName as UserName From dbo.BlogPost a, UserProfile b where a.UserId = b.UserId and Id = {0}", id).FirstOrDefault();
             }
         }
 
@@ -74,7 +74,7 @@ namespace DAL
         {
             using (_advContext = new AdvContext())
             {
-                return _advContext.Database.SqlQuery<BlogPost>("Select * From dbo.BlogPost where UserId = {0}", id).ToList();
+                return _advContext.Database.SqlQuery<BlogPost>(@"Select a.*,  b.FirstName + ' ' + b.LastName as UserName From dbo.BlogPost a, UserProfile b where a.UserId = b.UserId and UserId = {0}", id).ToList();
             }
         }
 
@@ -98,7 +98,7 @@ namespace DAL
         {
             using (_advContext = new AdvContext())
             {
-                return _advContext.Database.SqlQuery<BlogPost>("Select TOP 10 * From dbo.BlogPost order by LastEditDate desc").ToList();
+                return _advContext.Database.SqlQuery<BlogPost>("Select TOP 10 a.[Id], [Topic], [Body], [LastEditDate], [MainPhotoId], [BlogId], c.FirstName + ' ' + c.LastName as UserName, b.UserId From dbo.BlogPost a, dbo.blog b, dbo.UserProfile c where c.Userid = b.UserId and a.BlogId = b.Id order by LastEditDate desc").ToList();
             }
         }
 
@@ -108,6 +108,15 @@ namespace DAL
             {
                 _advContext.Comments.Add(model);
                 _advContext.SaveChanges();
+            }
+        }
+
+        public string DeletePost(int id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                _advContext.Database.ExecuteSqlCommand("delete From dbo.BlogPost where Id = {0}", id);
+                return "";
             }
         }
     }

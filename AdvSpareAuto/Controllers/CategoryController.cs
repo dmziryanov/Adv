@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
@@ -10,9 +11,9 @@ namespace AdvSpareAuto.Controllers
 {
     public class CategoryController : Controller
     {
-
         private readonly ICategoryRepository _categoryRepository;
         private IAdvRepository _advRepository;
+        private string countryCode;
 
         public CategoryController(ICategoryRepository categoryRepository, IAdvRepository advRepository)
         {
@@ -20,15 +21,26 @@ namespace AdvSpareAuto.Controllers
             _advRepository = advRepository;
         }
 
+        public ActionResult ReserveGoogleAdvView()
+        {
+            return View();
+        }
+
         public JsonResult Index()
         {
             return Json(_categoryRepository.GetAll(), JsonRequestBehavior.AllowGet);
         }
 
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, VaryByParam = "category", Duration = 60)]
+        [ValidateInput(false)]
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, VaryByParam = "category;location;keywords", Duration = 60)]
         public ActionResult Search(string keywords, string location, string category)
         {
-            //В этом методе только заполняется модель и берется первое объявление, основной список заполняется асинхронно в  CategoryController
+            //В этом методе только заполняется модель и берется первое объявление, основной список заполняется асинхронно в  AdvController
+            if (string.IsNullOrEmpty(countryCode))
+                using (var httpClient = new WebClient())
+                {
+                    countryCode = System.Text.Encoding.UTF8.GetString(httpClient.DownloadData(("http://freegeoip.net/csv/" + HttpContext.Request.ServerVariables["REMOTE_ADDR"]))).Split(',')[1];
+                }
             _advRepository.SaveSearch(WebSecurity.CurrentUserId, keywords, location);
             var adv = _advRepository.Get(0);
             adv.KeyWords = keywords;
@@ -56,14 +68,38 @@ namespace AdvSpareAuto.Controllers
             if (int.TryParse(category, out j))
             {
 
-                adv.Category = adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault().ID;
-                ViewBag.Message = "Купить " + adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault().Name;
+                var catname = "";
+                if (adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault() != null)
+                {
+                    adv.Category = adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault().ID;
+                    catname = adv._subCategories.Where(x => x.ID == Convert.ToInt32(category)).FirstOrDefault().Name;
+                }
+
+                var cityname = "";
+                int cityId = 0;
+                if (int.TryParse(location, out cityId))
+                {
+                    if (adv._locations.Where(x => x.CityId == Convert.ToInt32(location)).FirstOrDefault() != null)
+                    cityname = adv._locations.Where(x => x.CityId == Convert.ToInt32(location)).FirstOrDefault().Name;
+                }
+
+                //SEO
+                List<int> cats= new List<int>();
+                cats.Add(19);
+                var CatSeoPrefix = cats.Contains(j) ? "Найти работу " : "Купить ";
+                ViewBag.Message = CatSeoPrefix + catname + "  " + cityname;
+                
             }
+            if (string.IsNullOrEmpty(ViewBag.Message))
+                ViewBag.Message = "Найти товары и услуги";
+            ViewBag.Keywords = "объявления,отзывы,блоги,создать блог, подать объявление, объявления о продаже,объявления по продаже,продажа авто бу";
+            adv.CountryCode = !string.IsNullOrEmpty(countryCode) ? countryCode : "RU";
             return View(adv);
         }
 
         public ActionResult Advanced()
         {
+            ViewBag.Keywords = "объявления,отзывы,блоги,создать блог, подать объявление, объявления о продаже,объявления по продаже,продажа авто бу";
             return View();
         }
     }

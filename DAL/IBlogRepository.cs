@@ -18,5 +18,6 @@ namespace DAL
         List<BlogComment> GetComments(int postId);
         IEnumerable<BlogPost> GetRecent();
         void AddComment(BlogComment model);
+        string DeletePost(int id);
     }
 }

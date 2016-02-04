@@ -2,9 +2,7 @@
 @model DAL.AdvModel
 <script src="../../assets/js/owl.carousel.min.js"></script>
 <script src="../../assets/js/adsdetails.js"></script>
-
-
-
+<link href="../../assets/plugins/bxslider/jquery.bxslider.css" rel="stylesheet" />
 <script>
     $(document).ready(function() {
         $('.bxslider').bxSlider({
@@ -22,6 +20,27 @@
     });
 
     </text>
+    }
+    
+    
+    function refreshedSaved(obj, id) {
+        $.ajax({
+            url: '/Adv/SaveAdv/' + id
+        }).success(function(data) {
+            $(obj).removeClass();
+            if (data == 'True')
+            {
+                $(obj).addClass("btn btn-danger btn-sm make-favorite");
+                $(obj).children().eq(1).html("Удалить сохранение");
+            }
+            else
+            {
+                $(obj).children().eq(1).html("Сохранить");
+                $(obj).addClass("btn btn-default btn-sm make-favorite");
+            }
+
+            SavedBtn();
+        });
     }
 
 
@@ -110,9 +129,12 @@
 <!-- Put this script tag to the place, where the Share button will be -->
 <script type="text/javascript">
 
+
 </script>
 
-<div class="inner-box relative">
+
+
+<div class="text-center">
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- adv large long box -->
     <ins class="adsbygoogle"
@@ -125,9 +147,6 @@
     </script>
 </div>
 
-@using (Html.BeginForm())
-{
-    <fieldset>
         <div class="main-container">
             <div class="container">
                 @*  <ol class="breadcrumb pull-left">
@@ -144,8 +163,6 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-9 page-content col-thin-right">
-
-
                         <div class="inner inner-box ads-details-wrapper">
                             <h2>
                                 @Html.DisplayTextFor(x => x.Name) @*<small class="label label-default adlistingtype">Company ad</small>*@
@@ -154,15 +171,14 @@
                             {
                                 <text>
                                     <span class="info-row">
-                                        <span class="date"><i class=" icon-clock"> </i> @Html.DisplayTextFor(x => x.Created) </span> - <span class="category">@Html.DisplayTextFor(x => x.CategoryName) </span>- <span class="item-location"><i class="fa fa-map-marker"></i> @Html.DisplayTextFor(x => x.LocationName) </span>
-                                        <span class="date">
-                                            Забрать объявление к себе в :
-                                            <a onclick=" Share.vkontakte('adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-vk fa-lg "></i> </a>
-                                        </span>
-                                        <a onclick=" Share.facebook('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-facebook fa-lg "></i></a>
-                                        <a onclick=" Share.mailru('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') ">Мой мир</a>
-                                        <a onclick=" Share.odnoklassniki('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-odnoklassniki fa-lg"></i></a>
-                                        <a onclick=" Share.twitter('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-twitter fa-lg "></i></a>  
+                                        <span class="date"><i class=" icon-clock"> </i> @Html.DisplayTextFor(x => x.Created) </span> - <span class="category">@Html.DisplayTextFor(x => x.CategoryName) </span> - <span class="item-location"><i class="fa fa-map-marker"></i> @Html.DisplayTextFor(x => x.LocationName) </span> 
+                                        <span class="item-location"><i class=""></i>Забрать объявление к себе в:</span>
+                                        
+                                        <a onclick="Share.vkontakte('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-vk fa-lg "></i> </a>
+                                        <a onclick="Share.facebook('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-facebook fa-lg "></i></a>
+                                        <a onclick="Share.mailru('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') ">Мой мир</a>
+                                        <a onclick="Share.odnoklassniki('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-odnoklassniki fa-lg"></i></a>
+                                        <a onclick="Share.twitter('http://adv.spare-auto.com/Adv/AdvDetails/@Model.Id', '@Model.Name', 'http://adv.spare-auto.com/Photo/Index/@Model.ImgIds[0]', '') "><i class="fa fa-twitter fa-lg "></i></a>  
                                         </span>
                                     
                                 </text>
@@ -210,8 +226,13 @@
                                                     </p>
                                                 </li>
                                                 <li>
+                                                    <p class="no-margin">
+                                                        <strong>Район:</strong> @Html.DisplayTextFor(x => x.SellerDistrict)
+                                                    </p>
+                                                </li>
+                                                <li>
                                                     <p class=" no-margin ">
-                                                        <strong>Состояние:</strong> @Html.DisplayTextFor(x => x.condition)
+                                                        <strong>Состояние:</strong> @Model.condition.GetDescription()
                                                     </p>
                                                 </li>
                                                 @if (@Model is CarAdvModel)
@@ -255,7 +276,7 @@
                                         <div class="ads-action">
                                             <ul class="list-border">
                                                 <li><a href="#"> <i class=" fa fa-user"></i>Объявления этого продавца </a> </li>
-                                                <li><a href="#"> <i class=" fa fa-heart"></i>Сохранить объявление</a> </li>
+                                                <li><a onclick="refreshedSaved(this, @Model.Id);" href="#"> <i class=" fa fa-heart"></i>Сохранить объявление</a> </li>
                                                 <li><a href="#"> <i class="fa fa-share-alt"></i>Забрать на внешний сайт</a> </li>
                                                 <li><a href="#reportAdvertiser" data-toggle="modal"> <i class="fa icon-info-circled-alt"></i>Пожаловаться</a> </li>
                                             </ul>
@@ -269,8 +290,22 @@
 
                         </div>
 
-
                         <div class="inner-box relative">
+                            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                            <!-- adv large long box -->
+                            <ins class="adsbygoogle"
+                                 style="display: block"
+                                 data-ad-client="ca-pub-9707096941681181"
+                                 data-ad-slot="8754484356"
+                                 data-ad-format="auto"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+
+                        </div>
+
+
+                    <div class="inner-box relative">
                             <div id="vk_comments"></div>
                             <script type="text/javascript">
                                 VK.Widgets.Comments("vk_comments", {limit: 10, width: "665", attach: "*"});
@@ -278,12 +313,15 @@
 
                         </div>
 
-                        <div class="inner-box relative">
+
+
+
+                    <div class="inner-box relative">
                             <h2 class="title-2">
-                                ПРОДВИГАЕМЫЕ ОБЪЯВЛЕНИЯ
-                                <a id="nextItem" class="link pull-right carousel-nav"> <i class="icon-right-open-big"></i></a>
-                                <a id="prevItem" class="link pull-right carousel-nav"> <i class="icon-left-open-big"></i> </a>
-                            </h2>
+                                ПРОДВИГАЕМЫЕ ОБЪЯВЛЕНИЯ <i class="pull-right"><a href="/Home/FAQ">(Как сюда попасть?)</a></i>
+    <a id="nextItem" class="link pull-right carousel-nav"> <i class="icon-right-open-big"></i></a>
+    <a id="prevItem" class="link pull-right carousel-nav"> <i class="icon-left-open-big"></i> </a>
+</h2>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="no-margin item-carousel owl-carousel owl-theme">
@@ -295,6 +333,7 @@
                                                         <img class="img-responsive" src="@item.firstphoto" alt="img">
                                                     </span>
                                                     <span class="item-name">@item.Name</span>
+                                                    <span class="item-location">@item.LocationName</span>
                                                     <span class="price">@item.PriceLabel</span>
                                                 </a>
                                             </div>
@@ -372,6 +411,7 @@
                                             </div>
                                             <div class="user-ads-action">
                                                 <a href="#contactAdvertiser" data-toggle="modal" class="btn   btn-default btn-block"><i class=" icon-mail-2"></i>Отправить сообщение</a> <a class="btn  btn-info btn-block"><i class=" icon-phone-1"></i>@Model.SellerPhone</a>
+                                                Удобно начать диалог с фразы, что нашли объявление на adv.spare-auto.com
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +488,8 @@
                                                 <li>Встречайтесь в общественном месте</li>
                                                 <li>Хорошо проверьте вешь перед покупкой</li>
                                                 <li>Платите после того как взяли вещь</li>
-                                            </ul>
+                                                <li>Внимание! Если автор объявления просит вас отправить SMS на короткий номер или перейти по ссылке на сайт, возможно вы имеете дело с мошенничеством!</li>
+</ul>
                                             <p>
                                                 <a class="pull-right" href="#">Подробнее...<i class="fa fa-angle-double-right"></i> </a>
                                             </p>
@@ -480,9 +521,7 @@
                     </div>
             </div>
         </div>
-    </fieldset>
 
-}
 <!-- /.          main - container -- >
 
 <!-- /.wrapper -->

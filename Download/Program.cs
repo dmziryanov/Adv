@@ -15,7 +15,7 @@ namespace Download
     {
         static void Main(string[] args)
         {
-
+            CategoryRepository repository = new CategoryRepository();
             var lines = new List<String>();
             var httpClient = new WebClient();
 
@@ -35,12 +35,19 @@ namespace Download
 
             Dictionary<string, List<string>> bnames = new Dictionary<string, List<string>>();
 
+            
+
             foreach (var var in refs)
             {
                 if (var.Attributes.Contains("href"))
                 {
+            
                     var l = new List<string>();
                     bnames.Add(var.InnerText, l);
+
+                    CarBrand b = new CarBrand() { Id = 1, Name = var.InnerText };
+                    repository.SaveBrand(b);
+
                     HtmlDocument carhtml = new HtmlDocument();
                     carhtml.LoadHtml(System.Text.Encoding.UTF8.GetString(httpClient.DownloadData("http://usedcars.ru" + var.Attributes[0].Value)));
                     var cars = carhtml.DocumentNode.Descendants("div")
@@ -52,10 +59,13 @@ namespace Download
                     {
                         if (carvar.Attributes.Contains("href"))
                             l.Add(carvar.InnerText);
+                        CarModel m = new CarModel() { BrandId = b.Id, Name = carvar.InnerText};
+                        repository.SaveModel(m);
                     }
                 }
             }
 
+            return;
             
             foreach (var brand in bnames.Keys)
             {

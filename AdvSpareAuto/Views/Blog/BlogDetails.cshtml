@@ -18,14 +18,14 @@
                     <h2>@Model.Blog.Description</h2>
                     <div class="row search-row animated fadeInUp">
 
-                            <div class="col-lg-4 col-sm-offset-2 col-sm-4 search-col relative ">
-                                <input type="text" value="" placeholder="Что ищем?" class="form-control locinput input-rel searchtag-input ">
-                            </div>
+                        <div class="col-lg-4 col-sm-offset-2 col-sm-4 search-col relative ">
+                            <input type="text" value="" placeholder="Что ищем?" class="form-control locinput input-rel searchtag-input ">
+                        </div>
 
 
-                            <div class="col-lg-4 col-sm-4 search-col">
-                                <button class="btn btn-primary btn-search btn-block"><i class="icon-mail-1"></i><strong>Поиск по блогу</strong></button>
-                            </div>
+                        <div class="col-lg-4 col-sm-4 search-col">
+                            <button class="btn btn-primary btn-search btn-block"><i class="icon-mail-1"></i><strong>Поиск по блогу</strong></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,19 +40,44 @@
     <div class="container">
         <div class="section-content">
             <div class="row ">
-                <div class="col-sm-8 blogLeft">
-                    <div class="blog-post-wrapper">
-                        @if (Request.IsAuthenticated && @Model.Blog.UserId == WebSecurity.CurrentUserId)
-                        {
-                            <text>
-                        <a href="/Blog/CreatePost/@Model.Blog.Id" class="btn btn-primary btn-block"><i class="icon-mail-1"></i><strong>Создать пост</strong></a>
+                @if (Request.IsAuthenticated && @Model.Blog.UserId == WebSecurity.CurrentUserId)
+                {
+                    <text>
+                        <div class="inner-box relative">
+                            <a href="/Blog/CreatePost/@Model.Blog.Id" class="btn btn-primary btn-block"><i class="icon-mail-1"></i><strong>Написать новую  публикацию</strong></a>
+                        </div>
                     </text>
-                        }
+                }
+                <div class="col-sm-8 blogLeft">
+
+                    <div class="blog-post-wrapper">
+
+
                         @foreach (var item in @Model.Blog.Posts)
                         {
+                            if ((@Model.Blog.Posts.IndexOf(item) + 2) % 3 == 0)
+                            {
+                                <text>
+                        <div style="padding: 15px">
+                            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                            <!-- adv large long box -->
+                            <ins class="adsbygoogle"
+                                 style="display: block"
+                                 data-ad-client="ca-pub-9707096941681181"
+                                 data-ad-slot="8754484356"
+                                 data-ad-format="auto"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                        </div>
+
+                    </text>
+                            }
+
                             <article class="blog-post-item">
                                 <div class="inner-box">
                                     <!--blog image-->
+
                                     <div class="blog-post-img">
 
                                         <a href="/Blog/BlogPost/@item.Id">
@@ -70,22 +95,32 @@
                                         <span class="info-row blog-post-meta">
                                             <span class="date"><i class=" icon-clock"> </i> @item.LastEditDate </span>  -
                                             <span class="author"> <i class="fa fa-user"></i>  <a rel="author" title="Посты @item.UserName" href="#">@item.UserName</a> </span>  -
-                                            <span class="item-location"><i class="fa fa-comments"></i> Комментарии <a href="#">0</a> </span>
+                                            <span class="item-location"><i class="fa fa-comments"></i> Комментарии <a href="#">@item.CommentsCount</a> </span>
                                         </span>
 
 
                                         <div class="blog-post-content">
                                             <h2>
                                                 <a href="/Blog/BlogPost/@item.Id">@item.Topic</a>
-                                            
+
                                             </h2>
                                             <p>
-                                                @Html.Raw(@item.Body)
+                                                @if (!string.IsNullOrEmpty(@item.Body))
+                                                {
+                                                    @Html.Raw(@item.Body.Substring(0, @item.Body.Length < 151 ? @item.Body.Length-1 : 150))
+                                                }
                                             </p>
                                             <div class="row">
                                                 <div class="col-md-12 clearfix blog-post-bottom">
                                                     <a class="btn btn-primary  pull-left" href="/Blog/BlogPost/@item.Id">Прочитать публикацию</a>
+                                                    @if (Request.IsAuthenticated && @Model.Blog.UserId == WebSecurity.CurrentUserId)
+                                                    {
+                                                        <text>
+                                                            <a class="btn btn-danger pull-right" href="/Blog/BlogDelete/@item.Id">Удалить</a>
+                                                        </text>
+                                                    }
                                                 </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -132,19 +167,19 @@
                                                     <a href="/Blog/BlogPost/@item.Id"><img class="no-margin" src="/Photo/Index/@item.MainPhotoId" alt="img"></a>
                                                 </div>
                                             </div>
-                                        <!--/.photobox-->
+                                            <!--/.photobox-->
                                             <div class="col-sm-8 col-xs-8 add-desc-box">
                                                 <div class="add-details">
                                                     <h5 class="add-title"><a href="/Blog/BlogPost/@item.Id">@item.Topic</a></h5>
                                                     <span class="info-row"><span class="date"><i class=" icon-clock"> </i> @item.LastEditDate </span> </span>
                                                 </div>
                                             </div>
-                                        <!--/.add-desc-box-->
+                                            <!--/.add-desc-box-->
                                         }
 
                                     </div>
                                 </div>
-                                <div style="clear:both"></div>
+                                <div style="clear: both"></div>
 
                                 <!--/.categories-list-->
                             </div>
@@ -155,6 +190,7 @@
                 <!--page-sidebar-->
 
             </div>
+
         </div>
     </div>
 </div>

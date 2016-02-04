@@ -1,3 +1,4 @@
+using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -27,6 +28,17 @@ namespace DAL
             }
         }
 
+        public ImageFile GetFileName(int id)
+        {
+            using (_advContext = new AdvContext())
+            {
+                var res = _advContext.Database.SqlQuery<ImageFile>("Select * From dbo.ImageFile where FileId = {0}", id).FirstOrDefault();
+                //var img = System.Drawing.Image.FromStream(new MemoryStream(res));
+
+                return res;
+            }
+        }
+
         public void ReleaseContext()
         {
             
@@ -36,15 +48,12 @@ namespace DAL
         {
             using (_advContext = new AdvContext())
             {
+                (_advContext as IObjectContextAdapter).ObjectContext.CommandTimeout = 120;
                 _advContext.ImageFiles.Add(imageFile);
                 _advContext.SaveChanges();
                 return imageFile.FileID;
             }
         }
-
-
-        
-
 
         ~ImageRepository()
         {
