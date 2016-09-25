@@ -1,0 +1,900 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A55F3F81-4462-460A-84E8-8EBC570BD4B9}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AdvSpareAuto</RootNamespace>
+    <AssemblyName>AdvSpareAuto</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\SpareAuto.Store.Web\RmsAuto.Store.Web\bin\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\SpareAuto.Store.Web\RmsAuto.Store.Web\bin\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc.FixedDisplayModes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.FixedDisplayModes.1.0.0\lib\net40\Microsoft.Web.Mvc.FixedDisplayModes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.30506.0\lib\net40\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.30506.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.30506.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.30506.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.2.0.30506.0\lib\net40\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebPages.OAuth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.OAuth.2.0.30506.0\lib\net40\Microsoft.Web.WebPages.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.2.0.30506.0\lib\net40\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.AspNet.4.1.4.12333\lib\net40-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.1.4.12333\lib\net40-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.1.4.12333\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.OData, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.OData.4.0.30506\lib\net40\System.Web.Http.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Spatial.5.2.0\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\AuthConfig.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdvController.cs" />
+    <Compile Include="Controllers\BlogController.cs" />
+    <Compile Include="Controllers\CarController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PhotoController.cs" />
+    <Compile Include="Controllers\PrivateOfficeController.cs" />
+    <Compile Include="Controllers\ReviewController.cs" />
+    <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\ContactModel.cs" />
+    <Compile Include="Models\ErrorInfo.cs" />
+    <Compile Include="Models\HomeModel.cs" />
+    <Compile Include="Models\ModelList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThumbNails\ThumbnailGenerator.cs" />
+    <Compile Include="ThumbNails\ThumbnailGeneratorConfig.cs" />
+    <Compile Include="ThumbNails\ThumbnailInfo.cs" />
+    <Compile Include="WindsorControllerFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="assets\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="assets\bootstrap\css\bootstrap.css" />
+    <Content Include="assets\bootstrap\css\bootstrap.min.css" />
+    <Content Include="assets\bootstrap\Currently v3.3.5.txt" />
+    <Content Include="assets\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="assets\bootstrap\js\bootstrap.js" />
+    <Content Include="assets\bootstrap\js\bootstrap.min.js" />
+    <Content Include="assets\bootstrap\js\npm.js" />
+    <Content Include="assets\css\AjaxLoader.gif" />
+    <Content Include="assets\css\animate.min.css" />
+    <Content Include="assets\css\animation.css" />
+    <Content Include="assets\css\bootstrap-select.css" />
+    <Content Include="assets\css\bootstrap-select.min.css" />
+    <Content Include="assets\css\bootstrap.css" />
+    <Content Include="assets\css\bootstrap.min.css" />
+    <Content Include="assets\css\fileinput.css" />
+    <Content Include="assets\css\fileinput.min.css" />
+    <Content Include="assets\css\font-awesome.css" />
+    <Content Include="assets\css\font-awesome.min.css" />
+    <Content Include="assets\css\fontello-codes.css" />
+    <Content Include="assets\css\fontello-embedded.css" />
+    <Content Include="assets\css\fontello-ie7-codes.css" />
+    <Content Include="assets\css\fontello-ie7.css" />
+    <Content Include="assets\css\fontello.css" />
+    <Content Include="assets\css\footable-0.1.css" />
+    <Content Include="assets\css\footable.paginate.css" />
+    <Content Include="assets\css\footable.sortable-0.1.css" />
+    <Content Include="assets\css\grabbing.png" />
+    <Content Include="assets\css\icheck\skins\all.css" />
+    <Content Include="assets\css\icheck\skins\flat\aero%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\aero.css" />
+    <Content Include="assets\css\icheck\skins\flat\aero.png" />
+    <Content Include="assets\css\icheck\skins\flat\blue%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\blue.css" />
+    <Content Include="assets\css\icheck\skins\flat\blue.png" />
+    <Content Include="assets\css\icheck\skins\flat\flat%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\flat.css" />
+    <Content Include="assets\css\icheck\skins\flat\flat.png" />
+    <Content Include="assets\css\icheck\skins\flat\green%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\green.css" />
+    <Content Include="assets\css\icheck\skins\flat\green.png" />
+    <Content Include="assets\css\icheck\skins\flat\grey%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\grey.css" />
+    <Content Include="assets\css\icheck\skins\flat\grey.png" />
+    <Content Include="assets\css\icheck\skins\flat\orange%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\orange.css" />
+    <Content Include="assets\css\icheck\skins\flat\orange.png" />
+    <Content Include="assets\css\icheck\skins\flat\pink%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\pink.css" />
+    <Content Include="assets\css\icheck\skins\flat\pink.png" />
+    <Content Include="assets\css\icheck\skins\flat\purple%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\purple.css" />
+    <Content Include="assets\css\icheck\skins\flat\purple.png" />
+    <Content Include="assets\css\icheck\skins\flat\red%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\red.css" />
+    <Content Include="assets\css\icheck\skins\flat\red.png" />
+    <Content Include="assets\css\icheck\skins\flat\yellow%402x.png" />
+    <Content Include="assets\css\icheck\skins\flat\yellow.css" />
+    <Content Include="assets\css\icheck\skins\flat\yellow.png" />
+    <Content Include="assets\css\icheck\skins\flat\_all.css" />
+    <Content Include="assets\css\icheck\skins\futurico\futurico%402x.png" />
+    <Content Include="assets\css\icheck\skins\futurico\futurico.css" />
+    <Content Include="assets\css\icheck\skins\futurico\futurico.png" />
+    <Content Include="assets\css\icheck\skins\line\aero.css" />
+    <Content Include="assets\css\icheck\skins\line\blue.css" />
+    <Content Include="assets\css\icheck\skins\line\green.css" />
+    <Content Include="assets\css\icheck\skins\line\grey.css" />
+    <Content Include="assets\css\icheck\skins\line\line%402x.png" />
+    <Content Include="assets\css\icheck\skins\line\line.css" />
+    <Content Include="assets\css\icheck\skins\line\line.png" />
+    <Content Include="assets\css\icheck\skins\line\orange.css" />
+    <Content Include="assets\css\icheck\skins\line\pink.css" />
+    <Content Include="assets\css\icheck\skins\line\purple.css" />
+    <Content Include="assets\css\icheck\skins\line\red.css" />
+    <Content Include="assets\css\icheck\skins\line\yellow.css" />
+    <Content Include="assets\css\icheck\skins\line\_all.css" />
+    <Content Include="assets\css\icheck\skins\minimal\aero%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\aero.css" />
+    <Content Include="assets\css\icheck\skins\minimal\aero.png" />
+    <Content Include="assets\css\icheck\skins\minimal\blue%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\blue.css" />
+    <Content Include="assets\css\icheck\skins\minimal\blue.png" />
+    <Content Include="assets\css\icheck\skins\minimal\green%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\green.css" />
+    <Content Include="assets\css\icheck\skins\minimal\green.png" />
+    <Content Include="assets\css\icheck\skins\minimal\grey%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\grey.css" />
+    <Content Include="assets\css\icheck\skins\minimal\grey.png" />
+    <Content Include="assets\css\icheck\skins\minimal\minimal%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\minimal.css" />
+    <Content Include="assets\css\icheck\skins\minimal\minimal.png" />
+    <Content Include="assets\css\icheck\skins\minimal\orange%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\orange.css" />
+    <Content Include="assets\css\icheck\skins\minimal\orange.png" />
+    <Content Include="assets\css\icheck\skins\minimal\pink%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\pink.css" />
+    <Content Include="assets\css\icheck\skins\minimal\pink.png" />
+    <Content Include="assets\css\icheck\skins\minimal\purple%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\purple.css" />
+    <Content Include="assets\css\icheck\skins\minimal\purple.png" />
+    <Content Include="assets\css\icheck\skins\minimal\red%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\red.css" />
+    <Content Include="assets\css\icheck\skins\minimal\red.png" />
+    <Content Include="assets\css\icheck\skins\minimal\yellow%402x.png" />
+    <Content Include="assets\css\icheck\skins\minimal\yellow.css" />
+    <Content Include="assets\css\icheck\skins\minimal\yellow.png" />
+    <Content Include="assets\css\icheck\skins\minimal\_all.css" />
+    <Content Include="assets\css\icheck\skins\polaris\polaris%402x.png" />
+    <Content Include="assets\css\icheck\skins\polaris\polaris.css" />
+    <Content Include="assets\css\icheck\skins\polaris\polaris.png" />
+    <Content Include="assets\css\icheck\skins\square\aero%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\aero.css" />
+    <Content Include="assets\css\icheck\skins\square\aero.png" />
+    <Content Include="assets\css\icheck\skins\square\blue%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\blue.css" />
+    <Content Include="assets\css\icheck\skins\square\blue.png" />
+    <Content Include="assets\css\icheck\skins\square\green%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\green.css" />
+    <Content Include="assets\css\icheck\skins\square\green.png" />
+    <Content Include="assets\css\icheck\skins\square\grey%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\grey.css" />
+    <Content Include="assets\css\icheck\skins\square\grey.png" />
+    <Content Include="assets\css\icheck\skins\square\orange%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\orange.css" />
+    <Content Include="assets\css\icheck\skins\square\orange.png" />
+    <Content Include="assets\css\icheck\skins\square\pink%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\pink.css" />
+    <Content Include="assets\css\icheck\skins\square\pink.png" />
+    <Content Include="assets\css\icheck\skins\square\purple%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\purple.css" />
+    <Content Include="assets\css\icheck\skins\square\purple.png" />
+    <Content Include="assets\css\icheck\skins\square\red%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\red.css" />
+    <Content Include="assets\css\icheck\skins\square\red.png" />
+    <Content Include="assets\css\icheck\skins\square\square%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\square.css" />
+    <Content Include="assets\css\icheck\skins\square\square.png" />
+    <Content Include="assets\css\icheck\skins\square\yellow%402x.png" />
+    <Content Include="assets\css\icheck\skins\square\yellow.css" />
+    <Content Include="assets\css\icheck\skins\square\yellow.png" />
+    <Content Include="assets\css\icheck\skins\square\_all.css" />
+    <Content Include="assets\css\img\down.png" />
+    <Content Include="assets\css\img\minus.png" />
+    <Content Include="assets\css\img\plus.png" />
+    <Content Include="assets\css\img\sorting_sprite.png" />
+    <Content Include="assets\css\img\up.png" />
+    <Content Include="assets\css\longshadow.css" />
+    <Content Include="assets\css\mdb.css" />
+    <Content Include="assets\css\mdb.min.css" />
+    <Content Include="assets\css\owl.carousel.css" />
+    <Content Include="assets\css\owl.theme.css" />
+    <Content Include="assets\css\pink\longshadow.css" />
+    <Content Include="assets\css\pink\style.css" />
+    <Content Include="assets\css\skin-1.css" />
+    <Content Include="assets\css\skin-2.css" />
+    <Content Include="assets\css\style.css" />
+    <Content Include="assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="assets\fonts\fontello.svg" />
+    <Content Include="assets\fonts\fontello\fontello.svg" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="assets\ico\apple-touch-icon-114-precomposed.png" />
+    <Content Include="assets\ico\apple-touch-icon-144-precomposed.png" />
+    <Content Include="assets\ico\apple-touch-icon-57-precomposed.png" />
+    <Content Include="assets\ico\apple-touch-icon-72-precomposed.png" />
+    <Content Include="assets\ico\favicon.png" />
+    <Content Include="assets\img\loading.gif" />
+    <Content Include="assets\js\adsdetails.js" />
+    <Content Include="assets\js\bootstrap.min.js" />
+    <Content Include="assets\js\fileinput.js" />
+    <Content Include="assets\js\fileinput.min.js" />
+    <Content Include="assets\js\footable.all.min.js" />
+    <Content Include="assets\js\footable.bookmarkable.js" />
+    <Content Include="assets\js\footable.filter.js" />
+    <Content Include="assets\js\footable.js" />
+    <Content Include="assets\js\footable.paginate.js" />
+    <Content Include="assets\js\footable.plugin.template.js" />
+    <Content Include="assets\js\footable.sort.js" />
+    <Content Include="assets\js\footable.sortable.js" />
+    <Content Include="assets\js\footable.striping.js" />
+    <Content Include="assets\js\form-validation.js" />
+    <Content Include="assets\js\grids.js" />
+    <Content Include="assets\js\hideMaxListItem-min.js" />
+    <Content Include="assets\js\hideMaxListItem.js" />
+    <Content Include="assets\js\jquery.easing.1.3.js" />
+    <Content Include="assets\js\jquery.matchHeight-min.js" />
+    <Content Include="assets\js\jquery.min.js" />
+    <Content Include="assets\js\jquery.parallax-1.1.js" />
+    <Content Include="assets\js\jquery.scrollto.js" />
+    <Content Include="assets\js\mdb.js" />
+    <Content Include="assets\js\mdb.min.js" />
+    <Content Include="assets\js\owl.carousel.min.js" />
+    <Content Include="assets\js\pace.min.js" />
+    <Content Include="assets\js\script.js" />
+    <Content Include="assets\plugins\autocomplete\autocomplete-demo.js" />
+    <Content Include="assets\plugins\autocomplete\countries.js" />
+    <Content Include="assets\plugins\autocomplete\jquery-2.1.1.js" />
+    <Content Include="assets\plugins\autocomplete\jquery.autocomplete.js" />
+    <Content Include="assets\plugins\autocomplete\jquery.autocomplete.min.js" />
+    <Content Include="assets\plugins\autocomplete\jquery.mockjax.js" />
+    <Content Include="assets\plugins\autocomplete\usastates.js" />
+    <Content Include="assets\plugins\bxslider\images\bx_loader.gif" />
+    <Content Include="assets\plugins\bxslider\images\controls.png" />
+    <Content Include="assets\plugins\bxslider\jquery.bxslider.css" />
+    <Content Include="assets\plugins\bxslider\jquery.bxslider.js" />
+    <Content Include="assets\plugins\bxslider\jquery.bxslider.min.js" />
+    <Content Include="assets\plugins\bxslider\plugins\jquery.easing.1.3.js" />
+    <Content Include="assets\plugins\bxslider\plugins\jquery.fitvids.js" />
+    <Content Include="assets\plugins\jquery.fs.scroller\jquery.fs.scroller.css" />
+    <Content Include="assets\plugins\jquery.fs.scroller\jquery.fs.scroller.js" />
+    <Content Include="assets\plugins\jquery.fs.scroller\jquery.fs.scroller.min.css" />
+    <Content Include="assets\plugins\jquery.fs.scroller\jquery.fs.scroller.min.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\autocomplete-demo.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\countries.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\jquery-1.8.2.min.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\jquery-2.1.1.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\jquery.autocomplete.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\jquery.autocomplete.min.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\jquery.mockjax.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\autocomplete\usastates.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\jquery.fs.selecter.css" />
+    <Content Include="assets\plugins\jquery.fs.selecter\jquery.fs.selecter.js" />
+    <Content Include="assets\plugins\jquery.fs.selecter\jquery.fs.selecter.min.css" />
+    <Content Include="assets\plugins\jquery.fs.selecter\jquery.fs.selecter.min.js" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="css\AjaxLoader.gif" />
+    <Content Include="css\animate.min.css" />
+    <Content Include="css\animation.css" />
+    <Content Include="css\bootstrap-select.css" />
+    <Content Include="css\bootstrap-select.min.css" />
+    <Content Include="css\bootstrap.css" />
+    <Content Include="css\bootstrap.min.css" />
+    <Content Include="css\fileinput.css" />
+    <Content Include="css\fileinput.min.css" />
+    <Content Include="css\font-awesome.css" />
+    <Content Include="css\font-awesome.min.css" />
+    <Content Include="css\fontello-codes.css" />
+    <Content Include="css\fontello-embedded.css" />
+    <Content Include="css\fontello-ie7-codes.css" />
+    <Content Include="css\fontello-ie7.css" />
+    <Content Include="css\fontello.css" />
+    <Content Include="css\footable-0.1.css" />
+    <Content Include="css\footable.paginate.css" />
+    <Content Include="css\footable.sortable-0.1.css" />
+    <Content Include="css\grabbing.png" />
+    <Content Include="css\icheck\skins\all.css" />
+    <Content Include="css\icheck\skins\flat\aero%402x.png" />
+    <Content Include="css\icheck\skins\flat\aero.css" />
+    <Content Include="css\icheck\skins\flat\aero.png" />
+    <Content Include="css\icheck\skins\flat\blue%402x.png" />
+    <Content Include="css\icheck\skins\flat\blue.css" />
+    <Content Include="css\icheck\skins\flat\blue.png" />
+    <Content Include="css\icheck\skins\flat\flat%402x.png" />
+    <Content Include="css\icheck\skins\flat\flat.css" />
+    <Content Include="css\icheck\skins\flat\flat.png" />
+    <Content Include="css\icheck\skins\flat\green%402x.png" />
+    <Content Include="css\icheck\skins\flat\green.css" />
+    <Content Include="css\icheck\skins\flat\green.png" />
+    <Content Include="css\icheck\skins\flat\grey%402x.png" />
+    <Content Include="css\icheck\skins\flat\grey.css" />
+    <Content Include="css\icheck\skins\flat\grey.png" />
+    <Content Include="css\icheck\skins\flat\orange%402x.png" />
+    <Content Include="css\icheck\skins\flat\orange.css" />
+    <Content Include="css\icheck\skins\flat\orange.png" />
+    <Content Include="css\icheck\skins\flat\pink%402x.png" />
+    <Content Include="css\icheck\skins\flat\pink.css" />
+    <Content Include="css\icheck\skins\flat\pink.png" />
+    <Content Include="css\icheck\skins\flat\purple%402x.png" />
+    <Content Include="css\icheck\skins\flat\purple.css" />
+    <Content Include="css\icheck\skins\flat\purple.png" />
+    <Content Include="css\icheck\skins\flat\red%402x.png" />
+    <Content Include="css\icheck\skins\flat\red.css" />
+    <Content Include="css\icheck\skins\flat\red.png" />
+    <Content Include="css\icheck\skins\flat\yellow%402x.png" />
+    <Content Include="css\icheck\skins\flat\yellow.css" />
+    <Content Include="css\icheck\skins\flat\yellow.png" />
+    <Content Include="css\icheck\skins\flat\_all.css" />
+    <Content Include="css\icheck\skins\futurico\futurico%402x.png" />
+    <Content Include="css\icheck\skins\futurico\futurico.css" />
+    <Content Include="css\icheck\skins\futurico\futurico.png" />
+    <Content Include="css\icheck\skins\line\aero.css" />
+    <Content Include="css\icheck\skins\line\blue.css" />
+    <Content Include="css\icheck\skins\line\green.css" />
+    <Content Include="css\icheck\skins\line\grey.css" />
+    <Content Include="css\icheck\skins\line\line%402x.png" />
+    <Content Include="css\icheck\skins\line\line.css" />
+    <Content Include="css\icheck\skins\line\line.png" />
+    <Content Include="css\icheck\skins\line\orange.css" />
+    <Content Include="css\icheck\skins\line\pink.css" />
+    <Content Include="css\icheck\skins\line\purple.css" />
+    <Content Include="css\icheck\skins\line\red.css" />
+    <Content Include="css\icheck\skins\line\yellow.css" />
+    <Content Include="css\icheck\skins\line\_all.css" />
+    <Content Include="css\icheck\skins\minimal\aero%402x.png" />
+    <Content Include="css\icheck\skins\minimal\aero.css" />
+    <Content Include="css\icheck\skins\minimal\aero.png" />
+    <Content Include="css\icheck\skins\minimal\blue%402x.png" />
+    <Content Include="css\icheck\skins\minimal\blue.css" />
+    <Content Include="css\icheck\skins\minimal\blue.png" />
+    <Content Include="css\icheck\skins\minimal\green%402x.png" />
+    <Content Include="css\icheck\skins\minimal\green.css" />
+    <Content Include="css\icheck\skins\minimal\green.png" />
+    <Content Include="css\icheck\skins\minimal\grey%402x.png" />
+    <Content Include="css\icheck\skins\minimal\grey.css" />
+    <Content Include="css\icheck\skins\minimal\grey.png" />
+    <Content Include="css\icheck\skins\minimal\minimal%402x.png" />
+    <Content Include="css\icheck\skins\minimal\minimal.css" />
+    <Content Include="css\icheck\skins\minimal\minimal.png" />
+    <Content Include="css\icheck\skins\minimal\orange%402x.png" />
+    <Content Include="css\icheck\skins\minimal\orange.css" />
+    <Content Include="css\icheck\skins\minimal\orange.png" />
+    <Content Include="css\icheck\skins\minimal\pink%402x.png" />
+    <Content Include="css\icheck\skins\minimal\pink.css" />
+    <Content Include="css\icheck\skins\minimal\pink.png" />
+    <Content Include="css\icheck\skins\minimal\purple%402x.png" />
+    <Content Include="css\icheck\skins\minimal\purple.css" />
+    <Content Include="css\icheck\skins\minimal\purple.png" />
+    <Content Include="css\icheck\skins\minimal\red%402x.png" />
+    <Content Include="css\icheck\skins\minimal\red.css" />
+    <Content Include="css\icheck\skins\minimal\red.png" />
+    <Content Include="css\icheck\skins\minimal\yellow%402x.png" />
+    <Content Include="css\icheck\skins\minimal\yellow.css" />
+    <Content Include="css\icheck\skins\minimal\yellow.png" />
+    <Content Include="css\icheck\skins\minimal\_all.css" />
+    <Content Include="css\icheck\skins\polaris\polaris%402x.png" />
+    <Content Include="css\icheck\skins\polaris\polaris.css" />
+    <Content Include="css\icheck\skins\polaris\polaris.png" />
+    <Content Include="css\icheck\skins\square\aero%402x.png" />
+    <Content Include="css\icheck\skins\square\aero.css" />
+    <Content Include="css\icheck\skins\square\aero.png" />
+    <Content Include="css\icheck\skins\square\blue%402x.png" />
+    <Content Include="css\icheck\skins\square\blue.css" />
+    <Content Include="css\icheck\skins\square\blue.png" />
+    <Content Include="css\icheck\skins\square\green%402x.png" />
+    <Content Include="css\icheck\skins\square\green.css" />
+    <Content Include="css\icheck\skins\square\green.png" />
+    <Content Include="css\icheck\skins\square\grey%402x.png" />
+    <Content Include="css\icheck\skins\square\grey.css" />
+    <Content Include="css\icheck\skins\square\grey.png" />
+    <Content Include="css\icheck\skins\square\orange%402x.png" />
+    <Content Include="css\icheck\skins\square\orange.css" />
+    <Content Include="css\icheck\skins\square\orange.png" />
+    <Content Include="css\icheck\skins\square\pink%402x.png" />
+    <Content Include="css\icheck\skins\square\pink.css" />
+    <Content Include="css\icheck\skins\square\pink.png" />
+    <Content Include="css\icheck\skins\square\purple%402x.png" />
+    <Content Include="css\icheck\skins\square\purple.css" />
+    <Content Include="css\icheck\skins\square\purple.png" />
+    <Content Include="css\icheck\skins\square\red%402x.png" />
+    <Content Include="css\icheck\skins\square\red.css" />
+    <Content Include="css\icheck\skins\square\red.png" />
+    <Content Include="css\icheck\skins\square\square%402x.png" />
+    <Content Include="css\icheck\skins\square\square.css" />
+    <Content Include="css\icheck\skins\square\square.png" />
+    <Content Include="css\icheck\skins\square\yellow%402x.png" />
+    <Content Include="css\icheck\skins\square\yellow.css" />
+    <Content Include="css\icheck\skins\square\yellow.png" />
+    <Content Include="css\icheck\skins\square\_all.css" />
+    <Content Include="css\img\down.png" />
+    <Content Include="css\img\minus.png" />
+    <Content Include="css\img\plus.png" />
+    <Content Include="css\img\sorting_sprite.png" />
+    <Content Include="css\img\up.png" />
+    <Content Include="css\longshadow.css" />
+    <Content Include="css\mdb.css" />
+    <Content Include="css\mdb.min.css" />
+    <Content Include="css\owl.carousel.css" />
+    <Content Include="css\owl.theme.css" />
+    <Content Include="css\pink\longshadow.css" />
+    <Content Include="css\pink\style.css" />
+    <Content Include="css\skin-1.css" />
+    <Content Include="css\skin-2.css" />
+    <Content Include="css\style.css" />
+    <Content Include="css\style_inspinia.css" />
+    <Content Include="Error500.html" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <EmbeddedResource Include="windsor.config.xml" />
+    <Content Include="assets\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="assets\bootstrap\css\bootstrap.css.map" />
+    <Content Include="assets\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="assets\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="assets\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="assets\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="assets\css\bootstrap-select.css.map" />
+    <Content Include="assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="assets\fonts\FontAwesome.otf" />
+    <Content Include="assets\fonts\fontello.eot" />
+    <Content Include="assets\fonts\fontello.ttf" />
+    <Content Include="assets\fonts\fontello.woff" />
+    <Content Include="assets\fonts\fontello\fontello.eot" />
+    <Content Include="assets\fonts\fontello\fontello.ttf" />
+    <Content Include="assets\fonts\fontello\fontello.woff" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="css\bootstrap-select.css.map" />
+    <None Include="Properties\PublishProfiles\111.pubxml" />
+    <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Images\apec_logo.png" />
+    <Content Include="Images\bg2.jpg" />
+    <Content Include="Images\bg3.jpg" />
+    <Content Include="Images\marker.png" />
+    <Content Include="Images\OperaBanner.png" />
+    <Content Include="js\bootstrap.min.js" />
+    <Content Include="js\jquery.min.js" />
+    <Content Include="js\mdb.js" />
+    <Content Include="js\mdb.min.js" />
+    <Content Include="js\modules %28optional%29\buttons.js" />
+    <Content Include="js\modules %28optional%29\chart.js" />
+    <Content Include="js\modules %28optional%29\collapsible.js" />
+    <Content Include="js\modules %28optional%29\dropdown.js" />
+    <Content Include="js\modules %28optional%29\forms-basic.js" />
+    <Content Include="js\modules %28optional%29\global.js" />
+    <Content Include="js\modules %28optional%29\jquery-easing.js" />
+    <Content Include="js\modules %28optional%29\mdb.js" />
+    <Content Include="js\modules %28optional%29\mdb.min.js" />
+    <Content Include="js\modules %28optional%29\scrolling-nav.js" />
+    <Content Include="js\modules %28optional%29\velocity.js" />
+    <Content Include="js\modules %28optional%29\video-bg.js" />
+    <Content Include="js\modules %28optional%29\waves-effect.js" />
+    <Content Include="js\modules %28optional%29\wow.js" />
+    <Content Include="plugins\autocomplete\autocomplete-demo.js" />
+    <Content Include="plugins\autocomplete\countries.js" />
+    <Content Include="plugins\autocomplete\jquery-2.1.1.js" />
+    <Content Include="plugins\autocomplete\jquery.autocomplete.js" />
+    <Content Include="plugins\autocomplete\jquery.autocomplete.min.js" />
+    <Content Include="plugins\autocomplete\jquery.mockjax.js" />
+    <Content Include="plugins\autocomplete\usastates.js" />
+    <Content Include="plugins\bxslider\images\bx_loader.gif" />
+    <Content Include="plugins\bxslider\images\controls.png" />
+    <Content Include="plugins\bxslider\jquery.bxslider.css" />
+    <Content Include="plugins\bxslider\jquery.bxslider.js" />
+    <Content Include="plugins\bxslider\jquery.bxslider.min.js" />
+    <Content Include="plugins\bxslider\plugins\jquery.easing.1.3.js" />
+    <Content Include="plugins\bxslider\plugins\jquery.fitvids.js" />
+    <Content Include="plugins\jquery.fs.scroller\jquery.fs.scroller.css" />
+    <Content Include="plugins\jquery.fs.scroller\jquery.fs.scroller.js" />
+    <Content Include="plugins\jquery.fs.scroller\jquery.fs.scroller.min.css" />
+    <Content Include="plugins\jquery.fs.scroller\jquery.fs.scroller.min.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\autocomplete-demo.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\countries.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\jquery-1.8.2.min.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\jquery-2.1.1.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\jquery.autocomplete.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\jquery.autocomplete.min.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\jquery.mockjax.js" />
+    <Content Include="plugins\jquery.fs.selecter\autocomplete\usastates.js" />
+    <Content Include="plugins\jquery.fs.selecter\jquery.fs.selecter.css" />
+    <Content Include="plugins\jquery.fs.selecter\jquery.fs.selecter.js" />
+    <Content Include="plugins\jquery.fs.selecter\jquery.fs.selecter.min.css" />
+    <Content Include="plugins\jquery.fs.selecter\jquery.fs.selecter.min.js" />
+    <Content Include="plugins\summernote\jquery.tooltip.min.js" />
+    <Content Include="plugins\summernote\summernote-bs3.css" />
+    <Content Include="plugins\summernote\summernote.css" />
+    <Content Include="plugins\summernote\summernote.min.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.1.0.js" />
+    <Content Include="Scripts\knockout.mapping-latest.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Images\accent.png" />
+    <Content Include="Images\bullet.png" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\orderedList0.png" />
+    <Content Include="Images\orderedList1.png" />
+    <Content Include="Images\orderedList2.png" />
+    <Content Include="Images\orderedList3.png" />
+    <Content Include="Images\orderedList4.png" />
+    <Content Include="Images\orderedList5.png" />
+    <Content Include="Images\orderedList6.png" />
+    <Content Include="Images\orderedList7.png" />
+    <Content Include="Images\orderedList8.png" />
+    <Content Include="Images\orderedList9.png" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
+    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
+    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Manage.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Adv\PostAdv.cshtml" />
+    <Content Include="Views\Category\SearchResults.cshtml" />
+    <Content Include="Views\Category\Search.cshtml" />
+    <Content Include="Views\Blog\Success.cshtml" />
+    <Content Include="Views\Adv\AdvDetails.cshtml" />
+    <Content Include="Views\Blog\Create.cshtml" />
+    <Content Include="Views\Review\Success.cshtml" />
+    <Content Include="Views\Review\CreateReview.cshtml" />
+    <Content Include="Views\Review\All.cshtml" />
+    <Content Include="Views\Blog\Index.cshtml" />
+    <Content Include="Views\Blog\BlogDetails.cshtml" />
+    <Content Include="Views\Home\FAQ.cshtml" />
+    <Content Include="Views\Home\SuccessMessage.cshtml" />
+    <Content Include="Views\Home\Terms.cshtml" />
+    <Content Include="Views\Blog\BlogPost.cshtml" />
+    <Content Include="Views\Adv\Success.cshtml" />
+    <Content Include="Views\Adv\Help.cshtml" />
+    <Content Include="Views\Blog\CreatePost.cshtml" />
+    <Content Include="Views\Blog\MyBlog.cshtml" />
+    <Content Include="Views\Review\MyReviews.cshtml" />
+    <Content Include="Views\Adv\MyAdv.cshtml" />
+    <Content Include="Views\Home\PrivateOffice.cshtml" />
+    <Content Include="Views\Adv\Edit.cshtml" />
+    <Content Include="Views\Adv\Delete.cshtml" />
+    <Content Include="Views\Adv\Error.cshtml" />
+    <Content Include="Views\Home\AdsSale.cshtml" />
+    <Content Include="Views\Car\Index.cshtml" />
+    <Content Include="Views\Car\Model.cshtml" />
+    <Content Include="Views\Car\Brand.cshtml" />
+    <Content Include="Views\Adv\PostCarAdv.cshtml" />
+    <Content Include="Views\Car\CarType.cshtml" />
+    <Content Include="Views\Car\CarDescription.cshtml" />
+    <Content Include="Views\Shared\CurrencyControl.cshtml" />
+    <Content Include="Views\Category\Advanced.cshtml" />
+    <Content Include="Views\Adv\AddToFavotites.cshtml" />
+    <Content Include="Views\Adv\Favorite.cshtml" />
+    <Content Include="Views\Home\PlaceBanner.cshtml" />
+    <Content Include="Views\Home\TerminateAccount.cshtml" />
+    <Content Include="Views\Home\Success.cshtml" />
+    <Content Include="Views\Category\ReserveGoogleAdvView.cshtml" />
+    <Content Include="Views\Adv\LeftPage.cshtml" />
+    <Content Include="Views\Home\SavedSearch.cshtml" />
+    <Content Include="Views\Home\CarSale.cshtml" />
+    <Content Include="Views\Home\JobSearch.cshtml" />
+    <Content Include="Views\Adv\PostResume.cshtml" />
+    <Content Include="Views\Adv\CarAdvTips.cshtml" />
+    <Content Include="Views\Category\ModelList.cshtml" />
+    <Content Include="Views\Blog\EditBlog.cshtml" />
+    <Content Include="Views\Category\BottomGoogleAdvView.cshtml" />
+    <Content Include="Views\Category\RightGoogleAdvView.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Views\FAQ\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{6b11160f-17b9-4d7b-b1cc-f6cc7e443f47}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RmsAuto.Common\RmsAuto.Common.csproj">
+      <Project>{7a551067-3165-433e-bdd0-f798eeee3930}</Project>
+      <Name>RmsAuto.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RmsAuto.TechDoc\RmsAuto.TechDoc.csproj">
+      <Project>{88624d18-f3f9-453f-9983-e6f34af03e18}</Project>
+      <Name>RmsAuto.TechDoc</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1431</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:1431/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>
